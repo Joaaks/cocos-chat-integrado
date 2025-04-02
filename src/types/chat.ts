@@ -5,6 +5,7 @@ export interface Message {
   sender: 'client' | 'operator';
   timestamp: Date;
   isRead: boolean;
+  isImage?: boolean; // Para identificar si el contenido es una imagen
 }
 
 export interface UserRequest {
@@ -13,6 +14,14 @@ export interface UserRequest {
   email: string;
   status: 'pending' | 'approved' | 'declined';
   timestamp: Date;
+}
+
+export interface User {
+  id: string;
+  username: string;
+  email: string;
+  role: 'client' | 'operator';
+  isLoggedIn: boolean;
 }
 
 export interface ChatState {
@@ -25,4 +34,5 @@ export interface ChatState {
   operatorName: string;
   operatorIsTyping: boolean;
   selectedUser: string;
+  currentUser: User | null;
 }

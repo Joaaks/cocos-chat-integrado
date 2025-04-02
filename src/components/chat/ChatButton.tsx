@@ -1,12 +1,16 @@
 
 import React from 'react';
-import { MessageCircle, X, Minimize2, Maximize2 } from 'lucide-react';
+import { MessageCircle, X, Minimize2, Maximize2, LogIn } from 'lucide-react';
 import { useChat } from '@/contexts/ChatContext';
 import { cn } from '@/lib/utils';
 
-export const ChatButton = () => {
+interface ChatButtonProps {
+  onLoginClick?: () => void;
+}
+
+export const ChatButton = ({ onLoginClick }: ChatButtonProps) => {
   const { state, toggleChat, minimizeChat, maximizeChat } = useChat();
-  const { isOpen, isMinimized, messages } = state;
+  const { isOpen, isMinimized, messages, currentUser } = state;
 
   const unreadMessages = messages.filter(
     (message) => !message.isRead && message.sender === 'operator'
@@ -30,6 +34,16 @@ export const ChatButton = () => {
 
       {isOpen && (
         <div className={cn("flex items-center space-x-2", isMinimized ? "animate-fade-in" : "")}>
+          {!currentUser && (
+            <button
+              onClick={onLoginClick}
+              className="flex items-center justify-center w-10 h-10 rounded-full bg-green-600 text-white hover:bg-green-700 transition-colors"
+              title="Iniciar Sesión"
+            >
+              <LogIn size={18} />
+            </button>
+          )}
+          
           {isMinimized && (
             <button
               onClick={maximizeChat}

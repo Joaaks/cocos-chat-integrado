@@ -1,11 +1,12 @@
+
 import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
-import { Message, UserRequest, ChatState } from '../types/chat';
+import { Message, UserRequest, ChatState, User } from '../types/chat';
 import { v4 as uuidv4 } from 'uuid';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 
 // Define actions
 type ChatAction =
-  | { type: 'SEND_MESSAGE'; payload: { content: string; sender: 'client' | 'operator'; isRead: boolean } }
+  | { type: 'SEND_MESSAGE'; payload: { content: string; sender: 'client' | 'operator'; isRead: boolean; isImage?: boolean } }
   | { type: 'TOGGLE_CHAT' }
   | { type: 'MINIMIZE_CHAT' }
   | { type: 'MAXIMIZE_CHAT' }
@@ -14,7 +15,9 @@ type ChatAction =
   | { type: 'SUBMIT_USER_REQUEST'; payload: { username: string, email: string } }
   | { type: 'SET_CLIENT_NAME'; payload: string }
   | { type: 'TOGGLE_OPERATOR_TYPING' }
-  | { type: 'SET_SELECTED_USER'; payload: string };
+  | { type: 'SET_SELECTED_USER'; payload: string }
+  | { type: 'LOGIN_USER'; payload: User }
+  | { type: 'LOGOUT_USER' };
 
 // Mock operator responses
 const operatorResponses = [
@@ -40,6 +43,7 @@ const initialState: ChatState = {
   operatorName: 'Casino Support',
   operatorIsTyping: false,
   selectedUser: 'all',
+  currentUser: null,
 };
 
 // Random operator messages for demo
@@ -61,6 +65,7 @@ const chatReducer = (state: ChatState, action: ChatAction): ChatState => {
             sender: action.payload.sender,
             timestamp: new Date(),
             isRead: action.payload.isRead,
+            isImage: action.payload.isImage || false,
           },
         ],
       };
@@ -128,6 +133,18 @@ const chatReducer = (state: ChatState, action: ChatAction): ChatState => {
         ...state,
         selectedUser: action.payload,
       };
+    case 'LOGIN_USER':
+      return {
+        ...state,
+        currentUser: action.payload,
+        clientName: action.payload.username,
+      };
+    case 'LOGOUT_USER':
+      return {
+        ...state,
+        currentUser: null,
+        clientName: '',
+      };
     default:
       return state;
   }
@@ -136,7 +153,7 @@ const chatReducer = (state: ChatState, action: ChatAction): ChatState => {
 // Create context
 interface ChatContextProps {
   state: ChatState;
-  sendMessage: (content: string, sender: 'client' | 'operator') => void;
+  sendMessage: (content: string, sender: 'client' | 'operator', isImage?: boolean) => void;
   toggleChat: () => void;
   minimizeChat: () => void;
   maximizeChat: () => void;
@@ -145,6 +162,9 @@ interface ChatContextProps {
   submitUserRequest: (username: string, email: string) => void;
   setClientName: (name: string) => void;
   setSelectedUser: (userId: string) => void;
+  loginUser: (user: User) => void;
+  logoutUser: () => void;
+  uploadImage: (file: File) => Promise<string>;
 }
 
 const ChatContext = createContext<ChatContextProps | undefined>(undefined);
@@ -204,10 +224,10 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   }, [state.userRequest]);
 
-  const sendMessage = (content: string, sender: 'client' | 'operator') => {
+  const sendMessage = (content: string, sender: 'client' | 'operator', isImage: boolean = false) => {
     dispatch({
       type: 'SEND_MESSAGE',
-      payload: { content, sender, isRead: false },
+      payload: { content, sender, isRead: false, isImage },
     });
   };
 
@@ -221,6 +241,24 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
   const setClientName = (name: string) => dispatch({ type: 'SET_CLIENT_NAME', payload: name });
   const setSelectedUser = (userId: string) => dispatch({ type: 'SET_SELECTED_USER', payload: userId });
+  const loginUser = (user: User) => dispatch({ type: 'LOGIN_USER', payload: user });
+  const logoutUser = () => dispatch({ type: 'LOGOUT_USER' });
+
+  // Función para simular carga de imágenes
+  const uploadImage = async (file: File): Promise<string> => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        // Simulamos un retraso para que parezca que está cargando
+        setTimeout(() => {
+          if (typeof reader.result === 'string') {
+            resolve(reader.result);
+          }
+        }, 1000);
+      };
+      reader.readAsDataURL(file);
+    });
+  };
 
   return (
     <ChatContext.Provider
@@ -235,6 +273,9 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         submitUserRequest,
         setClientName,
         setSelectedUser,
+        loginUser,
+        logoutUser,
+        uploadImage,
       }}
     >
       {children}

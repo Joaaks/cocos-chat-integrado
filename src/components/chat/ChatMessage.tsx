@@ -23,12 +23,27 @@ export const ChatMessage = forwardRef<HTMLDivElement, ChatMessageProps>(
           isClient ? 'justify-end' : 'justify-start'
         )}
       >
-        <div className="flex flex-col">
-          <div className={cn(
-            isClient ? 'message-bubble-client' : 'message-bubble-operator'
-          )}>
-            {message.content}
-          </div>
+        <div className="flex flex-col max-w-[70%]">
+          {message.isImage ? (
+            <div className={cn(
+              'rounded-lg overflow-hidden border',
+              isClient 
+                ? 'border-casino-gold bg-casino-secondary/30' 
+                : 'border-casino-secondary bg-casino-primary/50'
+            )}>
+              <img
+                src={message.content}
+                alt="Imagen compartida"
+                className="max-w-full rounded-lg"
+              />
+            </div>
+          ) : (
+            <div className={cn(
+              isClient ? 'message-bubble-client' : 'message-bubble-operator'
+            )}>
+              {message.content}
+            </div>
+          )}
           <span className={cn(
             'text-xs mt-1 text-gray-400',
             isClient ? 'text-right' : 'text-left'
