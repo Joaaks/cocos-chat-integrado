@@ -33,7 +33,7 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
       const selectedClient = clients.find(client => client.id === selectedUser);
       if (selectedClient && selectedClient.operatorId === currentUser.id) {
         // Return messages for this specific client
-        return true;
+        return msg.id === selectedClient.id;
       }
     }
     
@@ -71,16 +71,12 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
     <div className="flex-1 flex flex-col border-l border-casino-secondary">
       <ChatHeader selectedUser={selectedUser} />
       
-      <ChatMessages 
-        messages={filteredMessages} 
-        selectedUser={selectedUser} 
-      />
+      <ChatMessages messages={filteredMessages} />
       
       <ChatInput 
-        sendMessage={sendMessage} 
-        isUploading={isUploading} 
+        onSendMessage={(content) => sendMessage(content, 'operator')}
+        onFileChange={handleFileChange}
         fileInputRef={fileInputRef}
-        handleFileChange={handleFileChange}
       />
     </div>
   );

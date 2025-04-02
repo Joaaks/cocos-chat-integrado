@@ -1,7 +1,5 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
 import { ClientChat } from '@/components/chat/ClientChat';
 import { LoginForm } from '@/components/auth/LoginForm';
 import { useChat } from '@/contexts/ChatContext';
@@ -27,7 +25,6 @@ const Index = () => {
             <a href="#" className="text-casino-text hover:text-casino-gold transition-colors">Juegos</a>
             <a href="#" className="text-casino-text hover:text-casino-gold transition-colors">Promociones</a>
             <a href="#" className="text-casino-text hover:text-casino-gold transition-colors">Sobre Nosotros</a>
-            <Link to="/operator" className="text-casino-text hover:text-casino-gold transition-colors">Panel de Operador</Link>
           </nav>
           <div className="flex items-center space-x-4">
             {currentUser ? (
