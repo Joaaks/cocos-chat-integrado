@@ -12,7 +12,7 @@ type ChatAction =
   | { type: 'MAXIMIZE_CHAT' }
   | { type: 'START_USER_REQUEST' }
   | { type: 'CANCEL_USER_REQUEST' }
-  | { type: 'SUBMIT_USER_REQUEST'; payload: { username: string, email: string } }
+  | { type: 'SUBMIT_USER_REQUEST'; payload: { username: string, email: string, phoneNumber: string, password: string } }
   | { type: 'SET_CLIENT_NAME'; payload: string }
   | { type: 'TOGGLE_OPERATOR_TYPING' }
   | { type: 'SET_SELECTED_USER'; payload: string }
@@ -100,6 +100,8 @@ const chatReducer = (state: ChatState, action: ChatAction): ChatState => {
         id: uuidv4(),
         username: action.payload.username,
         email: action.payload.email,
+        phoneNumber: action.payload.phoneNumber,
+        password: action.payload.password,
         status: 'pending',
         timestamp: new Date(),
       };
@@ -159,7 +161,7 @@ interface ChatContextProps {
   maximizeChat: () => void;
   startUserRequest: () => void;
   cancelUserRequest: () => void;
-  submitUserRequest: (username: string, email: string) => void;
+  submitUserRequest: (username: string, email: string, phoneNumber: string, password: string) => void;
   setClientName: (name: string) => void;
   setSelectedUser: (userId: string) => void;
   loginUser: (user: User) => void;
@@ -236,8 +238,8 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const maximizeChat = () => dispatch({ type: 'MAXIMIZE_CHAT' });
   const startUserRequest = () => dispatch({ type: 'START_USER_REQUEST' });
   const cancelUserRequest = () => dispatch({ type: 'CANCEL_USER_REQUEST' });
-  const submitUserRequest = (username: string, email: string) => {
-    dispatch({ type: 'SUBMIT_USER_REQUEST', payload: { username, email } });
+  const submitUserRequest = (username: string, email: string, phoneNumber: string, password: string) => {
+    dispatch({ type: 'SUBMIT_USER_REQUEST', payload: { username, email, phoneNumber, password } });
   };
   const setClientName = (name: string) => dispatch({ type: 'SET_CLIENT_NAME', payload: name });
   const setSelectedUser = (userId: string) => dispatch({ type: 'SET_SELECTED_USER', payload: userId });

@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { ChatMessage } from '../chat/ChatMessage';
-import { SendIcon, User, Users, Search, Image, Loader2 } from 'lucide-react';
+import { SendIcon, User, Users, Search, Image, Loader2, Phone, Mail, Lock } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export const OperatorPanel = () => {
@@ -66,6 +66,20 @@ export const OperatorPanel = () => {
     { id: 'user2', name: 'María García', status: 'offline' },
     { id: 'user3', name: 'Carlos Rodríguez', status: 'online' },
   ];
+
+  const handleApproveUser = () => {
+    toast({
+      title: "Usuario Aprobado",
+      description: `La solicitud de ${userRequest?.username} ha sido aprobada.`,
+    });
+  };
+
+  const handleRejectUser = () => {
+    toast({
+      title: "Usuario Rechazado",
+      description: `La solicitud de ${userRequest?.username} ha sido rechazada.`,
+    });
+  };
 
   return (
     <div className="h-screen flex flex-col bg-casino-dark text-casino-text">
@@ -250,7 +264,15 @@ export const OperatorPanel = () => {
               <div className="flex justify-between items-start mb-3">
                 <div>
                   <h3 className="font-medium text-casino-gold">{userRequest.username}</h3>
-                  <p className="text-sm text-gray-400">{userRequest.email}</p>
+                  <div className="flex items-center text-sm text-gray-400 mt-1">
+                    <Mail className="h-4 w-4 mr-1" /> {userRequest.email}
+                  </div>
+                  <div className="flex items-center text-sm text-gray-400 mt-1">
+                    <Phone className="h-4 w-4 mr-1" /> {userRequest.phoneNumber}
+                  </div>
+                  <div className="flex items-center text-sm text-gray-400 mt-1">
+                    <Lock className="h-4 w-4 mr-1" /> Contraseña establecida
+                  </div>
                 </div>
                 <Badge className={`${
                   userRequest.status === 'approved' 
@@ -276,6 +298,7 @@ export const OperatorPanel = () => {
                 <Button
                   className="bg-green-500 hover:bg-green-600 text-white"
                   disabled={userRequest.status !== 'pending'}
+                  onClick={handleApproveUser}
                 >
                   Aprobar
                 </Button>
@@ -283,6 +306,7 @@ export const OperatorPanel = () => {
                   variant="outline"
                   className="border-casino-accent text-casino-accent hover:bg-casino-accent hover:text-white"
                   disabled={userRequest.status !== 'pending'}
+                  onClick={handleRejectUser}
                 >
                   Rechazar
                 </Button>

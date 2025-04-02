@@ -12,6 +12,8 @@ export interface UserRequest {
   id: string;
   username: string;
   email: string;
+  phoneNumber: string; // Añadimos el número de celular
+  password: string; // Añadimos la contraseña (en un sistema real esto debe cifrarse)
   status: 'pending' | 'approved' | 'declined';
   timestamp: Date;
 }
@@ -20,6 +22,7 @@ export interface User {
   id: string;
   username: string;
   email: string;
+  phoneNumber?: string; // Agregamos número de celular opcional para usuarios existentes
   role: 'client' | 'operator';
   isLoggedIn: boolean;
 }

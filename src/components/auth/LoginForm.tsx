@@ -7,11 +7,13 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { useToast } from '@/hooks/use-toast';
 import { v4 as uuidv4 } from 'uuid';
 import { User } from '@/types/chat'; // Import the User type
+import { RegisterForm } from './RegisterForm';
 
 export const LoginForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
   const { loginUser } = useChat();
   const { toast } = useToast();
 
@@ -52,6 +54,10 @@ export const LoginForm = () => {
       setIsLoggingIn(false);
     }, 1000);
   };
+
+  if (showRegister) {
+    return <RegisterForm onBackToLogin={() => setShowRegister(false)} />;
+  }
 
   return (
     <Card className="w-full max-w-md mx-auto animate-fade-in">
@@ -107,8 +113,14 @@ export const LoginForm = () => {
           </Button>
         </form>
       </CardContent>
-      <CardFooter className="flex justify-center text-sm text-gray-400">
-        <p>¿No tienes cuenta? Solicita una a través del chat.</p>
+      <CardFooter className="flex justify-center text-sm text-gray-400 flex-col gap-2">
+        <Button 
+          variant="link" 
+          className="text-casino-gold"
+          onClick={() => setShowRegister(true)}
+        >
+          ¿No tienes cuenta? Regístrate aquí
+        </Button>
       </CardFooter>
     </Card>
   );
