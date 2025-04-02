@@ -66,13 +66,7 @@ export const LoginForm = () => {
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="client" className="w-full mb-6" onValueChange={value => setLoginType(value as 'client' | 'operator')}>
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="client" className="flex items-center text-base font-normal text-center px-0 rounded-3xl">
-              <UserIcon className="w-4 h-4 mr-2" />
-              Cliente
-            </TabsTrigger>
-            
-          </TabsList>
+          
           
           <TabsContent value="client">
             <p className="text-sm text-gray-400 mb-4">Accede como cliente para chatear con nuestros operadores</p>
