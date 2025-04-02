@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { v4 as uuidv4 } from 'uuid';
+import { User } from '@/types/chat'; // Import the User type
 
 export const LoginForm = () => {
   const [username, setUsername] = useState('');
@@ -30,11 +31,14 @@ export const LoginForm = () => {
 
     // Simulación de autenticación
     setTimeout(() => {
-      const user = {
+      // Explicitly set the role as a union type 'client' | 'operator'
+      const role: 'client' | 'operator' = username.includes('operator') ? 'operator' : 'client';
+      
+      const user: User = {
         id: uuidv4(),
         username,
         email: `${username}@example.com`,
-        role: username.includes('operator') ? 'operator' : 'client', 
+        role, // Using the properly typed role variable
         isLoggedIn: true
       };
 
