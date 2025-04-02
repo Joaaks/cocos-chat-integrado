@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
 import { Message, UserRequest, ChatState } from '../types/chat';
 import { v4 as uuidv4 } from 'uuid';
@@ -6,7 +5,7 @@ import { useToast } from '@/components/ui/use-toast';
 
 // Define actions
 type ChatAction =
-  | { type: 'SEND_MESSAGE'; payload: Omit<Message, 'id' | 'timestamp' | 'isRead'> }
+  | { type: 'SEND_MESSAGE'; payload: { content: string; sender: 'client' | 'operator'; isRead: boolean } }
   | { type: 'TOGGLE_CHAT' }
   | { type: 'MINIMIZE_CHAT' }
   | { type: 'MAXIMIZE_CHAT' }
@@ -61,7 +60,7 @@ const chatReducer = (state: ChatState, action: ChatAction): ChatState => {
             content: action.payload.content,
             sender: action.payload.sender,
             timestamp: new Date(),
-            isRead: false,
+            isRead: action.payload.isRead,
           },
         ],
       };
