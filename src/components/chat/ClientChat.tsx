@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useChat } from '@/contexts/ChatContext';
 import { ChatButton } from './ChatButton';
 import { ChatWindow } from './ChatWindow';
@@ -11,8 +11,15 @@ export const ClientChat = () => {
   const { isOpen, isMinimized, currentUser } = state;
   const [isLoginOpen, setIsLoginOpen] = useState(false);
 
+  // Reset login state when user is logged in
+  useEffect(() => {
+    if (currentUser) {
+      setIsLoginOpen(false);
+    }
+  }, [currentUser]);
+
   // Si no está logueado y se abre el chat, mostramos el formulario de login
-  const showLoginForm = !currentUser && isOpen && !isLoginOpen;
+  const showLoginForm = !currentUser && isOpen;
 
   // Manejador para cuando se selecciona la opción de login
   const handleLoginClick = () => {
@@ -30,7 +37,7 @@ export const ClientChat = () => {
             isMinimized ? "h-0 opacity-0" : "opacity-100"
           )}
         >
-          {showLoginForm || isLoginOpen ? (
+          {showLoginForm ? (
             <div className="h-full p-4 overflow-y-auto">
               <LoginForm />
             </div>

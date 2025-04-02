@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useChat } from '@/contexts/ChatContext';
 import { Button } from '@/components/ui/button';
@@ -9,18 +10,17 @@ import { User } from '@/types/chat'; // Import the User type
 import { RegisterForm } from './RegisterForm';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Loader2, UserIcon, HeadsetIcon } from 'lucide-react';
+
 export const LoginForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const [loginType, setLoginType] = useState<'client' | 'operator'>('client');
-  const {
-    loginUser
-  } = useChat();
-  const {
-    toast
-  } = useToast();
+  
+  const { loginUser } = useChat();
+  const { toast } = useToast();
+  
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!username || !password) {
@@ -31,6 +31,7 @@ export const LoginForm = () => {
       });
       return;
     }
+    
     setIsLoggingIn(true);
 
     // Simulación de autenticación
@@ -48,25 +49,40 @@ export const LoginForm = () => {
           operatorId: null
         }) // Initially null, will be assigned when accepted by an operator
       };
+      
       loginUser(user);
+      
       toast({
         title: "Bienvenido",
         description: `Has iniciado sesión como ${role === 'operator' ? 'operador' : 'cliente'}`
       });
+      
       setIsLoggingIn(false);
     }, 1000);
   };
+  
   if (showRegister) {
     return <RegisterForm onBackToLogin={() => setShowRegister(false)} />;
   }
-  return <Card className="w-full max-w-md mx-auto animate-fade-in">
+  
+  return (
+    <Card className="w-full max-w-md mx-auto animate-fade-in">
       <CardHeader className="text-center">
         <CardTitle className="text-2xl text-casino-gold">Iniciar Sesión</CardTitle>
         <CardDescription>Ingresa tus credenciales para acceder</CardDescription>
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="client" className="w-full mb-6" onValueChange={value => setLoginType(value as 'client' | 'operator')}>
-          
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="client" className="flex items-center gap-2">
+              <UserIcon size={16} />
+              Cliente
+            </TabsTrigger>
+            <TabsTrigger value="operator" className="flex items-center gap-2">
+              <HeadsetIcon size={16} />
+              Operador
+            </TabsTrigger>
+          </TabsList>
           
           <TabsContent value="client">
             <p className="text-sm text-gray-400 mb-4">Accede como cliente para chatear con nuestros operadores</p>
@@ -105,5 +121,6 @@ export const LoginForm = () => {
           ¿No tienes cuenta? Regístrate aquí
         </Button>
       </CardFooter>
-    </Card>;
+    </Card>
+  );
 };

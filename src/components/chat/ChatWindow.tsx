@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { useChat } from '@/contexts/ChatContext';
 import { ChatMessage } from './ChatMessage';
@@ -9,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { SendIcon, User, Loader2, Image, PaperclipIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
+
 export const ChatWindow = () => {
   const {
     state,
@@ -46,6 +48,7 @@ export const ChatWindow = () => {
       inputRef.current?.focus();
     }
   }, [isRequestingUser, showImageUpload]);
+  
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (message.trim()) {
@@ -53,6 +56,7 @@ export const ChatWindow = () => {
       setMessage('');
     }
   };
+  
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -80,15 +84,19 @@ export const ChatWindow = () => {
       }
     }
   };
+  
   const triggerFileInput = () => {
     fileInputRef.current?.click();
   };
+  
   if (isRequestingUser) {
     return <UserRequestForm />;
   }
+  
   if (showImageUpload) {
     return <ImageUpload onClose={() => setShowImageUpload(false)} />;
   }
+  
   return <div className="flex flex-col h-full animate-fade-in">
       {/* Chat header */}
       <div className="p-4 border-b border-casino-secondary text-casino-text bg-casino-primary">
@@ -142,8 +150,6 @@ export const ChatWindow = () => {
             <Button type="button" variant="outline" size="icon" onClick={triggerFileInput} className="bg-casino-secondary border-casino-secondary text-casino-text hover:bg-casino-gold hover:text-casino-primary hover:border-casino-gold" title="Enviar Imagen" disabled={isUploading}>
               {isUploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Image size={18} />}
             </Button>
-            
-            
             
             <div className="flex-1"></div>
             
