@@ -17,7 +17,9 @@ type ChatAction =
   | { type: 'TOGGLE_OPERATOR_TYPING' }
   | { type: 'SET_SELECTED_USER'; payload: string }
   | { type: 'LOGIN_USER'; payload: User }
-  | { type: 'LOGOUT_USER' };
+  | { type: 'LOGOUT_USER' }
+  | { type: 'ASSIGN_CLIENT_TO_OPERATOR'; payload: { clientId: string, operatorId: string } }
+  | { type: 'ADD_PENDING_CLIENT'; payload: User };
 
 // Mock operator responses
 const operatorResponses = [
@@ -44,6 +46,8 @@ const initialState: ChatState = {
   operatorIsTyping: false,
   selectedUser: 'all',
   currentUser: null,
+  clients: [], // Inicializamos la lista de clientes
+  pendingClients: [], // Inicializamos la lista de clientes pendientes
 };
 
 // Random operator messages for demo
@@ -105,10 +109,23 @@ const chatReducer = (state: ChatState, action: ChatAction): ChatState => {
         status: 'pending',
         timestamp: new Date(),
       };
+      
+      // Create a new pending client
+      const newClient: User = {
+        id: uuidv4(),
+        username: action.payload.username,
+        email: action.payload.email,
+        phoneNumber: action.payload.phoneNumber,
+        role: 'client',
+        isLoggedIn: false,
+        operatorId: null
+      };
+      
       return {
         ...state,
         userRequest: newUserRequest,
         isRequestingUser: false,
+        pendingClients: [...state.pendingClients, newClient],
         messages: [
           ...state.messages,
           {
@@ -147,6 +164,35 @@ const chatReducer = (state: ChatState, action: ChatAction): ChatState => {
         currentUser: null,
         clientName: '',
       };
+    case 'ASSIGN_CLIENT_TO_OPERATOR':
+      // Find the client and update their operatorId
+      const updatedPendingClients = state.pendingClients.filter(
+        client => client.id !== action.payload.clientId
+      );
+      
+      const clientToAssign = state.pendingClients.find(
+        client => client.id === action.payload.clientId
+      );
+      
+      if (!clientToAssign) {
+        return state;
+      }
+      
+      const updatedClient = {
+        ...clientToAssign,
+        operatorId: action.payload.operatorId
+      };
+      
+      return {
+        ...state,
+        pendingClients: updatedPendingClients,
+        clients: [...state.clients, updatedClient],
+      };
+    case 'ADD_PENDING_CLIENT':
+      return {
+        ...state,
+        pendingClients: [...state.pendingClients, action.payload],
+      };
     default:
       return state;
   }
@@ -167,6 +213,7 @@ interface ChatContextProps {
   loginUser: (user: User) => void;
   logoutUser: () => void;
   uploadImage: (file: File) => Promise<string>;
+  assignClientToOperator: (clientId: string, operatorId: string) => void;
 }
 
 const ChatContext = createContext<ChatContextProps | undefined>(undefined);
@@ -245,6 +292,14 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const setSelectedUser = (userId: string) => dispatch({ type: 'SET_SELECTED_USER', payload: userId });
   const loginUser = (user: User) => dispatch({ type: 'LOGIN_USER', payload: user });
   const logoutUser = () => dispatch({ type: 'LOGOUT_USER' });
+  const assignClientToOperator = (clientId: string, operatorId: string) => {
+    dispatch({ type: 'ASSIGN_CLIENT_TO_OPERATOR', payload: { clientId, operatorId } });
+    
+    toast({
+      title: "Cliente Asignado",
+      description: "El cliente ha sido asignado a tu cuenta correctamente.",
+    });
+  };
 
   // Función para simular carga de imágenes
   const uploadImage = async (file: File): Promise<string> => {
@@ -278,6 +333,7 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         loginUser,
         logoutUser,
         uploadImage,
+        assignClientToOperator,
       }}
     >
       {children}

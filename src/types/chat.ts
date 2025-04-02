@@ -25,6 +25,7 @@ export interface User {
   phoneNumber?: string; // Agregamos número de celular opcional para usuarios existentes
   role: 'client' | 'operator';
   isLoggedIn: boolean;
+  operatorId?: string | null; // ID del operador asignado al cliente (solo para clientes)
 }
 
 export interface ChatState {
@@ -38,4 +39,6 @@ export interface ChatState {
   operatorIsTyping: boolean;
   selectedUser: string;
   currentUser: User | null;
+  clients: User[]; // Lista de clientes registrados
+  pendingClients: User[]; // Clientes sin operador asignado
 }

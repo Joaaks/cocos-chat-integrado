@@ -1,81 +1,87 @@
 
 import React from 'react';
-import { User } from 'lucide-react';
-import { Users } from 'lucide-react';
-import { Search } from 'lucide-react';
-import { Input } from '@/components/ui/input';
+import { useChat } from '@/contexts/ChatContext';
+import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Message } from '@/types/chat';
+import { UserIcon, Users } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface UsersListProps {
   selectedUser: string;
   setSelectedUser: (userId: string) => void;
-  messages: any[];
+  messages: Message[];
 }
 
-export const UsersList = ({ selectedUser, setSelectedUser, messages }: UsersListProps) => {
-  // Mock users for demonstration
-  const mockUsers = [
-    { id: 'user1', name: 'Juan Pérez', status: 'online' },
-    { id: 'user2', name: 'María García', status: 'offline' },
-    { id: 'user3', name: 'Carlos Rodríguez', status: 'online' },
-  ];
+export const UsersList: React.FC<UsersListProps> = ({
+  selectedUser,
+  setSelectedUser,
+  messages
+}) => {
+  const { state } = useChat();
+  const { clients, currentUser } = state;
+  
+  // Filter clients that are assigned to this operator
+  const operatorClients = clients.filter(client => 
+    currentUser?.role === 'operator' && client.operatorId === currentUser.id
+  );
 
-  return (
-    <div className="w-1/3 border-r border-casino-secondary bg-casino-primary overflow-auto">
-      <div className="p-3">
-        <div className="relative">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400" />
-          <Input
-            placeholder="Buscar chats"
-            className="w-full pl-9 bg-casino-secondary border-casino-secondary text-casino-text"
-          />
+  if (!currentUser || currentUser.role !== 'operator') {
+    return (
+      <div className="w-72 bg-casino-dark border-r border-casino-secondary p-4">
+        <div className="flex items-center justify-center h-full">
+          <p className="text-gray-400 text-center">
+            Inicia sesión como operador para ver la lista de clientes.
+          </p>
         </div>
       </div>
-      
-      <div className="space-y-1 p-1">
-        <button
-          onClick={() => setSelectedUser('all')}
-          className={`w-full text-left p-3 hover:bg-casino-secondary rounded-md transition-colors ${
-            selectedUser === 'all' ? 'bg-casino-secondary' : ''
-          }`}
-        >
-          <div className="flex items-center">
-            <div className="w-10 h-10 rounded-full gold-gradient flex items-center justify-center mr-3">
-              <Users size={16} className="text-casino-primary" />
-            </div>
-            <div>
-              <div className="font-medium">Todos los mensajes</div>
-              <div className="text-xs text-gray-400">{messages.length} mensajes</div>
-            </div>
-          </div>
-        </button>
-        
-        {mockUsers.map((user) => (
-          <button
-            key={user.id}
-            onClick={() => setSelectedUser(user.id)}
-            className={`w-full text-left p-3 hover:bg-casino-secondary rounded-md transition-colors ${
-              selectedUser === user.id ? 'bg-casino-secondary' : ''
-            }`}
-          >
-            <div className="flex items-center">
-              <div className="relative">
-                <div className="w-10 h-10 rounded-full bg-casino-secondary flex items-center justify-center mr-3">
-                  <User size={16} />
-                </div>
-                <span className={`absolute bottom-0 right-3 w-3 h-3 rounded-full ${
-                  user.status === 'online' ? 'bg-green-500' : 'bg-gray-400'
-                }`}></span>
-              </div>
-              <div>
-                <div className="font-medium">{user.name}</div>
-                <div className="text-xs text-gray-400">
-                  {user.status === 'online' ? 'En línea' : 'Desconectado'}
-                </div>
-              </div>
-            </div>
-          </button>
-        ))}
+    );
+  }
+
+  return (
+    <div className="w-72 bg-casino-dark border-r border-casino-secondary flex flex-col">
+      <div className="p-4 border-b border-casino-secondary">
+        <h2 className="text-lg font-semibold text-casino-gold">Tus Clientes</h2>
+        <p className="text-sm text-gray-400">Gestiona tus conversaciones</p>
       </div>
+      
+      <ScrollArea className="flex-1">
+        <div className="p-2 space-y-1">
+          <Button
+            variant="ghost"
+            className={cn(
+              "w-full justify-start font-normal",
+              selectedUser === 'all' && "bg-casino-secondary text-casino-gold"
+            )}
+            onClick={() => setSelectedUser('all')}
+          >
+            <Users className="mr-2 h-4 w-4" />
+            <span>Todos los mensajes</span>
+          </Button>
+          
+          {operatorClients.length > 0 ? (
+            operatorClients.map(client => (
+              <Button
+                key={client.id}
+                variant="ghost"
+                className={cn(
+                  "w-full justify-start font-normal",
+                  selectedUser === client.id && "bg-casino-secondary text-casino-gold"
+                )}
+                onClick={() => setSelectedUser(client.id)}
+              >
+                <UserIcon className="mr-2 h-4 w-4" />
+                <span>{client.username}</span>
+              </Button>
+            ))
+          ) : (
+            <div className="text-center p-4 text-gray-400">
+              <p>No tienes clientes asignados</p>
+              <p className="text-xs mt-1">Los clientes aparecerán aquí cuando los aceptes</p>
+            </div>
+          )}
+        </div>
+      </ScrollArea>
     </div>
   );
 };

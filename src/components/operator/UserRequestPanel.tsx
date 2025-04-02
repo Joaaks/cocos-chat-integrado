@@ -1,95 +1,127 @@
 
 import React from 'react';
-import { Badge } from '@/components/ui/badge';
+import { useChat } from '@/contexts/ChatContext';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { UserRequest } from '@/types/chat';
-import { format } from 'date-fns';
+import { UserRequest, User } from '@/types/chat';
+import { CheckCircle, XCircle, User as UserIcon, Clock } from 'lucide-react';
+import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Mail, Phone, Lock } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
 
 interface UserRequestPanelProps {
   userRequest: UserRequest | null;
 }
 
-export const UserRequestPanel = ({ userRequest }: UserRequestPanelProps) => {
-  const { toast } = useToast();
+export const UserRequestPanel: React.FC<UserRequestPanelProps> = ({ userRequest }) => {
+  const { state, assignClientToOperator } = useChat();
+  const { pendingClients, currentUser } = state;
+  
+  if (!currentUser || currentUser.role !== 'operator') {
+    return (
+      <div className="flex items-center justify-center h-full p-8 text-center">
+        <div>
+          <UserIcon className="w-12 h-12 mx-auto text-gray-400 mb-4" />
+          <h3 className="text-xl font-medium text-casino-gold mb-2">Acceso restringido</h3>
+          <p className="text-gray-400">
+            Necesitas iniciar sesión como operador para acceder a esta sección.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
-  const handleApproveUser = () => {
-    toast({
-      title: "Usuario Aprobado",
-      description: `La solicitud de ${userRequest?.username} ha sido aprobada.`,
-    });
+  const handleAcceptClient = (clientId: string) => {
+    if (currentUser && currentUser.id) {
+      assignClientToOperator(clientId, currentUser.id);
+    }
   };
 
-  const handleRejectUser = () => {
-    toast({
-      title: "Usuario Rechazado",
-      description: `La solicitud de ${userRequest?.username} ha sido rechazada.`,
-    });
-  };
+  if (pendingClients.length === 0 && !userRequest) {
+    return (
+      <div className="flex items-center justify-center h-full p-8 text-center">
+        <div>
+          <Clock className="w-12 h-12 mx-auto text-gray-400 mb-4" />
+          <h3 className="text-xl font-medium text-casino-gold mb-2">No hay solicitudes pendientes</h3>
+          <p className="text-gray-400">
+            Actualmente no hay solicitudes de usuarios nuevos en espera de aprobación.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="flex-1 p-6">
-      <h2 className="text-lg font-medium mb-4">Solicitudes de Usuario</h2>
+    <div className="p-6 space-y-6 overflow-auto h-full">
+      <h2 className="text-xl font-semibold text-casino-gold">Solicitudes de Usuario Pendientes</h2>
       
-      {userRequest ? (
-        <div className="bg-casino-secondary rounded-lg p-4 animate-fade-in">
-          <div className="flex justify-between items-start mb-3">
-            <div>
-              <h3 className="font-medium text-casino-gold">{userRequest.username}</h3>
-              <div className="flex items-center text-sm text-gray-400 mt-1">
-                <Mail className="h-4 w-4 mr-1" /> {userRequest.email}
-              </div>
-              <div className="flex items-center text-sm text-gray-400 mt-1">
-                <Phone className="h-4 w-4 mr-1" /> {userRequest.phoneNumber}
-              </div>
-              <div className="flex items-center text-sm text-gray-400 mt-1">
-                <Lock className="h-4 w-4 mr-1" /> Contraseña establecida
-              </div>
+      {pendingClients.map((client) => (
+        <Card key={client.id} className="bg-casino-primary border-casino-secondary">
+          <CardHeader>
+            <CardTitle className="text-casino-gold">{client.username}</CardTitle>
+            <CardDescription>
+              Cliente nuevo
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <div className="flex justify-between">
+              <span className="text-gray-400">Email:</span>
+              <span className="text-casino-text">{client.email}</span>
             </div>
-            <Badge className={`${
-              userRequest.status === 'approved' 
-                ? 'bg-green-500' 
-                : userRequest.status === 'declined'
-                ? 'bg-casino-accent'
-                : 'bg-yellow-500'
-            }`}>
-              {userRequest.status === 'approved' 
-                ? 'Aprobado' 
-                : userRequest.status === 'declined'
-                ? 'Rechazado'
-                : 'Pendiente'
-              }
-            </Badge>
-          </div>
-          
-          <div className="text-xs text-gray-400 mb-4">
-            Solicitado el {format(new Date(userRequest.timestamp), 'dd MMM yyyy, HH:mm', { locale: es })}
-          </div>
-          
-          <div className="flex space-x-2">
-            <Button
-              className="bg-green-500 hover:bg-green-600 text-white"
-              disabled={userRequest.status !== 'pending'}
-              onClick={handleApproveUser}
+            {client.phoneNumber && (
+              <div className="flex justify-between">
+                <span className="text-gray-400">Teléfono:</span>
+                <span className="text-casino-text">{client.phoneNumber}</span>
+              </div>
+            )}
+          </CardContent>
+          <CardFooter className="flex justify-end space-x-2">
+            <Button 
+              variant="outline" 
+              className="border-casino-gold text-casino-gold hover:bg-casino-gold hover:text-casino-primary"
+              onClick={() => handleAcceptClient(client.id)}
             >
-              Aprobar
+              <CheckCircle className="mr-2 h-4 w-4" />
+              Aceptar
             </Button>
-            <Button
-              variant="outline"
-              className="border-casino-accent text-casino-accent hover:bg-casino-accent hover:text-white"
-              disabled={userRequest.status !== 'pending'}
-              onClick={handleRejectUser}
-            >
-              Rechazar
-            </Button>
-          </div>
-        </div>
-      ) : (
-        <div className="text-center py-10 text-gray-400">
-          No hay solicitudes pendientes
-        </div>
+          </CardFooter>
+        </Card>
+      ))}
+      
+      {userRequest && (
+        <Card className="bg-casino-primary border-casino-secondary">
+          <CardHeader>
+            <CardTitle className="text-casino-gold">{userRequest.username}</CardTitle>
+            <CardDescription>
+              Solicitado hace {formatDistanceToNow(new Date(userRequest.timestamp), { locale: es })}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <div className="flex justify-between">
+              <span className="text-gray-400">Email:</span>
+              <span className="text-casino-text">{userRequest.email}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-400">Teléfono:</span>
+              <span className="text-casino-text">{userRequest.phoneNumber}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-400">Estado:</span>
+              <span className={`${
+                userRequest.status === 'approved' 
+                  ? 'text-green-500' 
+                  : userRequest.status === 'declined' 
+                  ? 'text-red-500' 
+                  : 'text-yellow-500'
+              }`}>
+                {userRequest.status === 'approved' 
+                  ? 'Aprobado' 
+                  : userRequest.status === 'declined' 
+                  ? 'Rechazado' 
+                  : 'Pendiente'}
+              </span>
+            </div>
+          </CardContent>
+        </Card>
       )}
     </div>
   );
