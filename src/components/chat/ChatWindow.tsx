@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { useChat } from '@/contexts/ChatContext';
 import { ChatMessage } from './ChatMessage';
@@ -10,22 +9,35 @@ import { Textarea } from '@/components/ui/textarea';
 import { SendIcon, User, Loader2, Image, PaperclipIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
-
 export const ChatWindow = () => {
-  const { state, sendMessage, startUserRequest, uploadImage } = useChat();
+  const {
+    state,
+    sendMessage,
+    startUserRequest,
+    uploadImage
+  } = useChat();
   const [message, setMessage] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [showImageUpload, setShowImageUpload] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { toast } = useToast();
-
-  const { messages, isRequestingUser, operatorName, operatorIsTyping, currentUser } = state;
+  const {
+    toast
+  } = useToast();
+  const {
+    messages,
+    isRequestingUser,
+    operatorName,
+    operatorIsTyping,
+    currentUser
+  } = state;
 
   // Auto-scroll to the bottom when messages change
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({
+      behavior: 'smooth'
+    });
   }, [messages, operatorIsTyping]);
 
   // Focus input when chat is opened
@@ -34,7 +46,6 @@ export const ChatWindow = () => {
       inputRef.current?.focus();
     }
   }, [isRequestingUser, showImageUpload]);
-
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (message.trim()) {
@@ -42,7 +53,6 @@ export const ChatWindow = () => {
       setMessage('');
     }
   };
-
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -50,11 +60,10 @@ export const ChatWindow = () => {
         toast({
           title: "Error",
           description: "Por favor sube sólo archivos de imagen.",
-          variant: "destructive",
+          variant: "destructive"
         });
         return;
       }
-
       setIsUploading(true);
       try {
         const imageUrl = await uploadImage(file);
@@ -64,28 +73,23 @@ export const ChatWindow = () => {
         toast({
           title: "Error",
           description: "No se pudo cargar la imagen. Inténtalo de nuevo.",
-          variant: "destructive",
+          variant: "destructive"
         });
       } finally {
         setIsUploading(false);
       }
     }
   };
-
   const triggerFileInput = () => {
     fileInputRef.current?.click();
   };
-
   if (isRequestingUser) {
     return <UserRequestForm />;
   }
-
   if (showImageUpload) {
     return <ImageUpload onClose={() => setShowImageUpload(false)} />;
   }
-
-  return (
-    <div className="flex flex-col h-full animate-fade-in">
+  return <div className="flex flex-col h-full animate-fade-in">
       {/* Chat header */}
       <div className="p-4 border-b border-casino-secondary text-casino-text bg-casino-primary">
         <div className="flex items-center">
@@ -101,8 +105,7 @@ export const ChatWindow = () => {
 
       {/* Messages container */}
       <div className="flex-1 overflow-y-auto p-4 space-y-2 bg-casino-dark">
-        {messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-center">
+        {messages.length === 0 ? <div className="flex flex-col items-center justify-center h-full text-center">
             <div className="w-16 h-16 rounded-full gold-gradient flex items-center justify-center mb-4">
               <MessageCircle className="text-casino-primary" size={32} />
             </div>
@@ -110,106 +113,47 @@ export const ChatWindow = () => {
             <p className="text-sm text-gray-400 mb-4 max-w-xs">
               Nuestros operadores están listos para atenderte. ¿En qué podemos ayudarte hoy?
             </p>
-            <Button 
-              className="bg-casino-secondary text-casino-text hover:bg-casino-gold hover:text-casino-primary transition-colors"
-              onClick={startUserRequest}
-            >
-              Solicitar Usuario Nuevo
-            </Button>
-          </div>
-        ) : (
-          <>
-            {messages.map((msg, i) => (
-              <ChatMessage 
-                key={msg.id} 
-                message={msg} 
-                isLast={i === messages.length - 1} 
-              />
-            ))}
-            {operatorIsTyping && (
-              <div className="flex items-center text-gray-400 animate-pulse">
+            
+          </div> : <>
+            {messages.map((msg, i) => <ChatMessage key={msg.id} message={msg} isLast={i === messages.length - 1} />)}
+            {operatorIsTyping && <div className="flex items-center text-gray-400 animate-pulse">
                 <Loader2 className="animate-spin h-4 w-4 mr-2" />
                 <span className="text-sm">El operador está escribiendo...</span>
-              </div>
-            )}
+              </div>}
             <div ref={messagesEndRef} />
-          </>
-        )}
+          </>}
       </div>
 
       {/* Input area */}
       <form onSubmit={handleSendMessage} className="border-t border-casino-secondary p-3 bg-casino-primary">
         <div className="flex flex-col space-y-2">
-          <Textarea
-            ref={inputRef}
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Escribe un mensaje..."
-            className="flex-1 bg-casino-secondary text-casino-text border-casino-secondary focus-visible:ring-casino-gold resize-none min-h-[60px]"
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                if (message.trim()) {
-                  handleSendMessage(e);
-                }
-              }
-            }}
-          />
+          <Textarea ref={inputRef} value={message} onChange={e => setMessage(e.target.value)} placeholder="Escribe un mensaje..." className="flex-1 bg-casino-secondary text-casino-text border-casino-secondary focus-visible:ring-casino-gold resize-none min-h-[60px]" onKeyDown={e => {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            if (message.trim()) {
+              handleSendMessage(e);
+            }
+          }
+        }} />
           
           <div className="flex items-center space-x-2">
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              accept="image/*"
-              className="hidden"
-            />
+            <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*" className="hidden" />
             
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              onClick={triggerFileInput}
-              className="bg-casino-secondary border-casino-secondary text-casino-text hover:bg-casino-gold hover:text-casino-primary hover:border-casino-gold"
-              title="Enviar Imagen"
-              disabled={isUploading}
-            >
-              {isUploading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Image size={18} />
-              )}
+            <Button type="button" variant="outline" size="icon" onClick={triggerFileInput} className="bg-casino-secondary border-casino-secondary text-casino-text hover:bg-casino-gold hover:text-casino-primary hover:border-casino-gold" title="Enviar Imagen" disabled={isUploading}>
+              {isUploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Image size={18} />}
             </Button>
             
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              onClick={startUserRequest}
-              className="bg-casino-secondary border-casino-secondary text-casino-text hover:bg-casino-gold hover:text-casino-primary hover:border-casino-gold"
-              title="Solicitar Usuario"
-            >
-              <User size={18} />
-            </Button>
+            
             
             <div className="flex-1"></div>
             
-            <Button
-              type="submit"
-              size="icon"
-              disabled={!message.trim() || isUploading}
-              className={cn(
-                "gold-gradient text-casino-primary",
-                (!message.trim() || isUploading) && "opacity-50 cursor-not-allowed"
-              )}
-            >
+            <Button type="submit" size="icon" disabled={!message.trim() || isUploading} className={cn("gold-gradient text-casino-primary", (!message.trim() || isUploading) && "opacity-50 cursor-not-allowed")}>
               <SendIcon size={18} />
             </Button>
           </div>
         </div>
       </form>
-    </div>
-  );
+    </div>;
 };
 
 // Import only where it's used
