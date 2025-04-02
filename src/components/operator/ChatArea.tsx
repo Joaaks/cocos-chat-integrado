@@ -24,6 +24,16 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
   const { state } = useChat();
   const { currentUser, clients } = state;
   
+  // Create mock users for ChatHeader component
+  const mockUsers = [
+    { id: 'all', name: 'Todos los mensajes', status: 'online' },
+    ...(clients || []).map(client => ({
+      id: client.id,
+      name: client.username || 'Usuario',
+      status: 'online'
+    }))
+  ];
+  
   // Filter messages based on the selected user and if the current user is an operator
   const filteredMessages = messages.filter(msg => {
     if (selectedUser === 'all') return true;
@@ -69,14 +79,13 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
 
   return (
     <div className="flex-1 flex flex-col border-l border-casino-secondary">
-      <ChatHeader selectedUser={selectedUser} />
+      <ChatHeader selectedUser={selectedUser} mockUsers={mockUsers} />
       
       <ChatMessages messages={filteredMessages} />
       
       <ChatInput 
-        onSendMessage={(content) => sendMessage(content, 'operator')}
-        onFileChange={handleFileChange}
-        fileInputRef={fileInputRef}
+        sendMessage={(content) => sendMessage(content, 'operator')}
+        uploadImage={uploadImage}
       />
     </div>
   );

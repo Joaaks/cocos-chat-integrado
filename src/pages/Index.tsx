@@ -1,9 +1,11 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ClientChat } from '@/components/chat/ClientChat';
 import { LoginForm } from '@/components/auth/LoginForm';
 import { useChat } from '@/contexts/ChatContext';
 import { LogOut } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Index = () => {
   const { state, logoutUser } = useChat();
@@ -83,11 +85,14 @@ const Index = () => {
                 <Button className="gold-gradient text-casino-primary text-lg px-8 py-6 font-medium hover:brightness-110">
                   Comenzar Ahora
                 </Button>
-                <Link to="/operator">
-                  <Button variant="outline" className="border-casino-gold text-casino-gold hover:bg-casino-gold hover:text-casino-primary text-lg px-8 py-6">
-                    Panel de Operador
-                  </Button>
-                </Link>
+                {/* Admin panel button only visible for development/debugging, not for regular users */}
+                {process.env.NODE_ENV === 'development' && (
+                  <Link to="/operator">
+                    <Button variant="outline" className="border-casino-gold text-casino-gold hover:bg-casino-gold hover:text-casino-primary text-lg px-8 py-6">
+                      Panel de Operador
+                    </Button>
+                  </Link>
+                )}
               </div>
             </div>
           </section>

@@ -6,7 +6,7 @@ import { SendIcon, Image, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface ChatInputProps {
-  sendMessage: (content: string, sender: 'client' | 'operator', isImage?: boolean) => void;
+  sendMessage: (content: string) => void;
   uploadImage: (file: File) => Promise<string>;
 }
 
@@ -19,7 +19,7 @@ export const ChatInput = ({ sendMessage, uploadImage }: ChatInputProps) => {
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (operatorMessage.trim()) {
-      sendMessage(operatorMessage, 'operator');
+      sendMessage(operatorMessage);
       setOperatorMessage('');
     }
   };
@@ -39,7 +39,7 @@ export const ChatInput = ({ sendMessage, uploadImage }: ChatInputProps) => {
       setIsUploading(true);
       try {
         const imageUrl = await uploadImage(file);
-        sendMessage(imageUrl, 'operator', true);
+        sendMessage(imageUrl);
       } catch (error) {
         toast({
           title: "Error",
