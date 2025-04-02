@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ClientChat } from '@/components/chat/ClientChat';
@@ -6,18 +5,19 @@ import { LoginForm } from '@/components/auth/LoginForm';
 import { useChat } from '@/contexts/ChatContext';
 import { LogOut } from 'lucide-react';
 import { Link } from 'react-router-dom';
-
 const Index = () => {
-  const { state, logoutUser } = useChat();
-  const { currentUser } = state;
+  const {
+    state,
+    logoutUser
+  } = useChat();
+  const {
+    currentUser
+  } = state;
   const [showLogin, setShowLogin] = useState(false);
-
   const handleLogout = () => {
     logoutUser();
   };
-
-  return (
-    <div className="min-h-screen bg-casino-dark">
+  return <div className="min-h-screen bg-casino-dark">
       {/* Header */}
       <header className="bg-casino-primary py-4 px-6 border-b border-casino-secondary">
         <div className="container mx-auto flex justify-between items-center">
@@ -29,48 +29,29 @@ const Index = () => {
             <a href="#" className="text-casino-text hover:text-casino-gold transition-colors">Sobre Nosotros</a>
           </nav>
           <div className="flex items-center space-x-4">
-            {currentUser ? (
-              <div className="flex items-center space-x-2">
+            {currentUser ? <div className="flex items-center space-x-2">
                 <span className="text-casino-text">Hola, {currentUser.username}</span>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="border-casino-gold text-casino-gold hover:bg-casino-gold hover:text-casino-primary"
-                  onClick={handleLogout}
-                >
+                <Button variant="outline" size="sm" className="border-casino-gold text-casino-gold hover:bg-casino-gold hover:text-casino-primary" onClick={handleLogout}>
                   <LogOut size={16} className="mr-1" /> Salir
                 </Button>
-              </div>
-            ) : (
-              <Button 
-                className="gold-gradient text-casino-primary font-medium hover:brightness-110"
-                onClick={() => setShowLogin(true)}
-              >
+              </div> : <Button className="gold-gradient text-casino-primary font-medium hover:brightness-110" onClick={() => setShowLogin(true)}>
                 Iniciar Sesión
-              </Button>
-            )}
+              </Button>}
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      {showLogin && !currentUser ? (
-        <div className="container mx-auto py-16 px-6">
+      {showLogin && !currentUser ? <div className="container mx-auto py-16 px-6">
           <div className="max-w-md mx-auto">
             <LoginForm />
             <div className="mt-4 text-center">
-              <Button 
-                variant="link" 
-                className="text-casino-gold"
-                onClick={() => setShowLogin(false)}
-              >
+              <Button variant="link" className="text-casino-gold" onClick={() => setShowLogin(false)}>
                 Volver a la página principal
               </Button>
             </div>
           </div>
-        </div>
-      ) : (
-        <>
+        </div> : <>
           {/* Hero Section */}
           <section className="py-20 px-6">
             <div className="container mx-auto text-center">
@@ -86,13 +67,9 @@ const Index = () => {
                   Comenzar Ahora
                 </Button>
                 {/* Admin panel button only visible for development/debugging, not for regular users */}
-                {process.env.NODE_ENV === 'development' && (
-                  <Link to="/operator">
-                    <Button variant="outline" className="border-casino-gold text-casino-gold hover:bg-casino-gold hover:text-casino-primary text-lg px-8 py-6">
-                      Panel de Operador
-                    </Button>
-                  </Link>
-                )}
+                {process.env.NODE_ENV === 'development' && <Link to="/operator">
+                    
+                  </Link>}
               </div>
             </div>
           </section>
@@ -135,8 +112,7 @@ const Index = () => {
               </div>
             </div>
           </section>
-        </>
-      )}
+        </>}
 
       {/* Footer */}
       <footer className="bg-casino-primary py-8 px-6 border-t border-casino-secondary">
@@ -149,10 +125,8 @@ const Index = () => {
 
       {/* Chat Component */}
       <ClientChat />
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
 
 // Import only where used
