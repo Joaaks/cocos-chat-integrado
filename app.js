@@ -17,9 +17,9 @@ mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
 app.use(express.json());
 
 // Ejemplo de ruta
-app.get('/', (req, res) => {
+app.get('/cocos-chat-integrado-main', (req, res) => {
     res.send('¡Hola Mundo!');
 });
 
 // Iniciar el servidor
-app.listen(PORT, () => {
+app.listen(3000, () => {
