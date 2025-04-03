@@ -19,13 +19,7 @@ export const ChatButton = () => {
           onClick={toggleChat}
           className="relative flex items-center justify-center w-14 h-14 rounded-full gold-gradient text-casino-primary shadow-lg hover:brightness-105 transition-all duration-300 casino-shadow animate-fade-in"
         >
-          <div className="w-10 h-10 overflow-hidden">
-            <img 
-              src="/images/cocosbet-full-logo.png" 
-              alt="Cocosbet Chat" 
-              className="w-full h-full object-contain" 
-            />
-          </div>
+          <MessageCircle size={24} />
           {unreadMessages > 0 && (
             <span className="absolute -top-1 -right-1 bg-casino-accent text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
               {unreadMessages}
