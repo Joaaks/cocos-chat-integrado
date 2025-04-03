@@ -32,13 +32,17 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             content: getRandomResponse(),
             sender: 'operator',
             isRead: false,
+            extraData: {
+              clientId: lastMessage.clientId,
+              operatorId: state.currentUser?.id
+            }
           },
         });
       }, 2000);
       
       return () => clearTimeout(typingTimeout);
     }
-  }, [state.messages]);
+  }, [state.messages, state.currentUser]);
 
   // Notification for user request status change
   useEffect(() => {
@@ -65,10 +69,16 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   }, [state.userRequest]);
 
-  const sendMessage = (content: string, sender: 'client' | 'operator', isImage: boolean = false) => {
+  const sendMessage = (content: string, sender: 'client' | 'operator', isImage: boolean = false, extraData?: any) => {
     dispatch({
       type: 'SEND_MESSAGE',
-      payload: { content, sender, isRead: false, isImage },
+      payload: { 
+        content, 
+        sender, 
+        isRead: false, 
+        isImage,
+        extraData
+      },
     });
   };
 

@@ -6,6 +6,8 @@ export interface Message {
   timestamp: Date;
   isRead: boolean;
   isImage?: boolean; // Para identificar si el contenido es una imagen
+  clientId?: string; // ID del cliente relacionado con el mensaje
+  operatorId?: string; // ID del operador relacionado con el mensaje
 }
 
 export interface UserRequest {

@@ -1,92 +1,72 @@
 
-import React, { useState, useRef } from 'react';
+import React from 'react';
+import { useChat } from '@/contexts/ChatContext';
 import { ChatHeader } from './ChatHeader';
 import { ChatMessages } from './ChatMessages';
 import { ChatInput } from './ChatInput';
-import { Message } from '@/types/chat';
-import { useChat } from '@/contexts/ChatContext';
 
-interface ChatAreaProps {
-  selectedUser: string;
-  messages: Message[];
-  sendMessage: (content: string, sender: 'client' | 'operator', isImage?: boolean) => void;
-  uploadImage: (file: File) => Promise<string>;
-}
+export const ChatArea: React.FC = () => {
+  const { state, sendMessage, uploadImage } = useChat();
+  const { selectedUser, clients, currentUser } = state;
 
-export const ChatArea: React.FC<ChatAreaProps> = ({
-  selectedUser,
-  messages,
-  sendMessage,
-  uploadImage
-}) => {
-  const [isUploading, setIsUploading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const { state } = useChat();
-  const { currentUser, clients } = state;
-  
-  // Create mock users for ChatHeader component
-  const mockUsers = [
-    { id: 'all', name: 'Todos los mensajes', status: 'online' },
-    ...(clients || []).map(client => ({
-      id: client.id,
-      name: client.username || 'Usuario',
-      status: 'online'
-    }))
-  ];
-  
-  // Filter messages based on the selected user and if the current user is an operator
-  const filteredMessages = messages.filter(msg => {
-    if (selectedUser === 'all') return true;
+  // Filtrar los mensajes según el usuario seleccionado
+  const filteredMessages = state.messages.filter(msg => {
+    // Si no hay un usuario seleccionado, no mostrar mensajes
+    if (selectedUser === 'all') return false;
     
-    // Find messages for clients assigned to this operator
-    if (currentUser?.role === 'operator') {
-      const selectedClient = clients.find(client => client.id === selectedUser);
-      if (selectedClient && selectedClient.operatorId === currentUser.id) {
-        // Return messages for this specific client
-        return msg.id === selectedClient.id;
-      }
+    // Si el mensaje es del operador actual, verificar si está dirigido al usuario seleccionado
+    if (msg.sender === 'operator' && currentUser?.id === msg.operatorId) {
+      return msg.clientId === selectedUser;
     }
     
+    // Si el mensaje es de un cliente, verificar si es del usuario seleccionado
+    if (msg.sender === 'client') {
+      return msg.clientId === selectedUser;
+    }
+    
+    // Para mantener compatibilidad con mensajes antiguos que no tienen clientId
     return false;
   });
 
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setIsUploading(true);
-      try {
-        const imageUrl = await uploadImage(file);
-        sendMessage(imageUrl, 'operator', true);
-      } catch (error) {
-        console.error('Failed to upload image:', error);
-      } finally {
-        setIsUploading(false);
-      }
+  // Encontrar el cliente seleccionado
+  const selectedClient = clients.find(client => client.id === selectedUser);
+
+  const handleSendMessage = (content: string) => {
+    if (selectedUser && selectedUser !== 'all') {
+      // Añadir información de destinatario al mensaje del operador
+      const messageWithRecipient = {
+        content,
+        clientId: selectedUser,
+        operatorId: currentUser?.id
+      };
+      sendMessage(content, 'operator', false, messageWithRecipient);
     }
   };
 
-  if (!currentUser || currentUser.role !== 'operator') {
-    return (
-      <div className="flex-1 flex flex-col">
-        <div className="flex items-center justify-center h-full p-8 text-center">
-          <p className="text-gray-400">
-            Inicia sesión como operador para ver los mensajes.
-          </p>
-        </div>
-      </div>
-    );
-  }
+  const handleUploadImage = async (file: File): Promise<string> => {
+    return await uploadImage(file);
+  };
 
   return (
-    <div className="flex-1 flex flex-col border-l border-casino-secondary">
-      <ChatHeader selectedUser={selectedUser} mockUsers={mockUsers} />
+    <div className="flex flex-col h-full bg-casino-dark">
+      <ChatHeader clientName={selectedClient?.username || ''} />
       
-      <ChatMessages messages={filteredMessages} />
+      <div className="flex-1 overflow-y-auto">
+        {selectedUser === 'all' ? (
+          <div className="flex items-center justify-center h-full">
+            <p className="text-gray-400">Selecciona un cliente para ver la conversación</p>
+          </div>
+        ) : (
+          <ChatMessages messages={filteredMessages} />
+        )}
+      </div>
       
-      <ChatInput 
-        sendMessage={(content) => sendMessage(content, 'operator')}
-        uploadImage={uploadImage}
-      />
+      {selectedUser !== 'all' && (
+        <ChatInput 
+          sendMessage={handleSendMessage} 
+          uploadImage={handleUploadImage}
+        />
+      )}
     </div>
   );
 };

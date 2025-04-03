@@ -6,21 +6,30 @@ import { UserRequest, User, Macro } from '@/types/chat';
 // Reducer function
 export const chatReducer = (state: ChatState, action: ChatAction): ChatState => {
   switch (action.type) {
-    case 'SEND_MESSAGE':
+    case 'SEND_MESSAGE': {
+      const { content, sender, isRead, isImage, extraData } = action.payload;
+      
+      // Preparar el mensaje con datos adicionales si están disponibles
+      const newMessage = {
+        id: uuidv4(),
+        content,
+        sender,
+        timestamp: new Date(),
+        isRead,
+        isImage: isImage || false,
+        // Añadir datos del cliente y operador si están disponibles
+        ...(extraData?.clientId ? { clientId: extraData.clientId } : {}),
+        ...(extraData?.operatorId ? { operatorId: extraData.operatorId } : {}),
+        // Mantener compatibilidad con mensajes anteriores
+        ...(sender === 'client' && state.currentUser ? { clientId: state.currentUser.id } : {}),
+        ...(sender === 'operator' && state.currentUser ? { operatorId: state.currentUser.id } : {})
+      };
+      
       return {
         ...state,
-        messages: [
-          ...state.messages,
-          {
-            id: uuidv4(),
-            content: action.payload.content,
-            sender: action.payload.sender,
-            timestamp: new Date(),
-            isRead: action.payload.isRead,
-            isImage: action.payload.isImage || false,
-          },
-        ],
+        messages: [...state.messages, newMessage],
       };
+    }
     case 'TOGGLE_CHAT':
       return {
         ...state,
@@ -47,7 +56,7 @@ export const chatReducer = (state: ChatState, action: ChatAction): ChatState => 
         ...state,
         isRequestingUser: false,
       };
-    case 'SUBMIT_USER_REQUEST':
+    case 'SUBMIT_USER_REQUEST': {
       const currentUrl = window.location.origin;
       const newUserRequest: UserRequest = {
         id: uuidv4(),
@@ -90,6 +99,16 @@ export const chatReducer = (state: ChatState, action: ChatAction): ChatState => 
         currentUrl.includes(operator.url)
       );
       
+      // Crear mensaje con el ID del cliente
+      const newMessage = {
+        id: uuidv4(),
+        content: `Solicitud de usuario enviada para: ${action.payload.username}`,
+        sender: 'client' as const,
+        timestamp: new Date(),
+        isRead: false,
+        clientId: newClient.id
+      };
+      
       if (matchingOperator) {
         // If there's a matching operator, assign the client directly
         newClient.operatorId = matchingOperator.id;
@@ -101,13 +120,7 @@ export const chatReducer = (state: ChatState, action: ChatAction): ChatState => 
           clients: [...state.clients, newClient], // Add directly to assigned clients
           messages: [
             ...state.messages,
-            {
-              id: uuidv4(),
-              content: `Solicitud de usuario enviada para: ${action.payload.username}`,
-              sender: 'client',
-              timestamp: new Date(),
-              isRead: false,
-            },
+            newMessage
           ],
         };
       } else {
@@ -119,16 +132,11 @@ export const chatReducer = (state: ChatState, action: ChatAction): ChatState => 
           pendingClients: [...state.pendingClients, newClient],
           messages: [
             ...state.messages,
-            {
-              id: uuidv4(),
-              content: `Solicitud de usuario enviada para: ${action.payload.username}`,
-              sender: 'client',
-              timestamp: new Date(),
-              isRead: false,
-            },
+            newMessage
           ],
         };
       }
+    }
     case 'SET_CLIENT_NAME':
       return {
         ...state,
@@ -144,7 +152,7 @@ export const chatReducer = (state: ChatState, action: ChatAction): ChatState => 
         ...state,
         selectedUser: action.payload,
       };
-    case 'LOGIN_USER':
+    case 'LOGIN_USER': {
       const userWithUrl = {
         ...action.payload,
         url: action.payload.url || window.location.origin, // Asegura que la URL siempre esté presente
@@ -155,13 +163,14 @@ export const chatReducer = (state: ChatState, action: ChatAction): ChatState => 
         currentUser: userWithUrl,
         clientName: action.payload.username,
       };
+    }
     case 'LOGOUT_USER':
       return {
         ...state,
         currentUser: null,
         clientName: '',
       };
-    case 'ASSIGN_CLIENT_TO_OPERATOR':
+    case 'ASSIGN_CLIENT_TO_OPERATOR': {
       // Find the client and update their operatorId
       const updatedPendingClients = state.pendingClients.filter(
         client => client.id !== action.payload.clientId
@@ -185,12 +194,13 @@ export const chatReducer = (state: ChatState, action: ChatAction): ChatState => 
         pendingClients: updatedPendingClients,
         clients: [...state.clients, updatedClient],
       };
+    }
     case 'ADD_PENDING_CLIENT':
       return {
         ...state,
         pendingClients: [...state.pendingClients, action.payload],
       };
-    case 'ADD_MACRO':
+    case 'ADD_MACRO': {
       const newMacro: Macro = {
         id: uuidv4(),
         title: action.payload.title,
@@ -202,6 +212,7 @@ export const chatReducer = (state: ChatState, action: ChatAction): ChatState => 
         ...state,
         macros: [...state.macros, newMacro],
       };
+    }
     case 'EDIT_MACRO':
       return {
         ...state,

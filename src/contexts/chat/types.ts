@@ -3,7 +3,7 @@ import { Message, UserRequest, User, Macro } from '@/types/chat';
 
 // Define actions
 export type ChatAction =
-  | { type: 'SEND_MESSAGE'; payload: { content: string; sender: 'client' | 'operator'; isRead: boolean; isImage?: boolean } }
+  | { type: 'SEND_MESSAGE'; payload: { content: string; sender: 'client' | 'operator'; isRead: boolean; isImage?: boolean; extraData?: any } }
   | { type: 'TOGGLE_CHAT' }
   | { type: 'MINIMIZE_CHAT' }
   | { type: 'MAXIMIZE_CHAT' }
@@ -24,7 +24,7 @@ export type ChatAction =
 // Context interface
 export interface ChatContextProps {
   state: ChatState;
-  sendMessage: (content: string, sender: 'client' | 'operator', isImage?: boolean) => void;
+  sendMessage: (content: string, sender: 'client' | 'operator', isImage?: boolean, extraData?: any) => void;
   toggleChat: () => void;
   minimizeChat: () => void;
   maximizeChat: () => void;

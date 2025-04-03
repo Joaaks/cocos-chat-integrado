@@ -11,7 +11,11 @@ import {
   SheetTrigger 
 } from '@/components/ui/sheet';
 
-export const MacrosQuickAccess: React.FC = () => {
+interface MacrosQuickAccessProps {
+  onInsert?: (content: string) => void;
+}
+
+export const MacrosQuickAccess: React.FC<MacrosQuickAccessProps> = ({ onInsert }) => {
   const { state, sendMessage } = useChat();
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -33,7 +37,11 @@ export const MacrosQuickAccess: React.FC = () => {
   }, [isOpen]);
 
   const handleSendMacro = (content: string) => {
-    sendMessage(content, 'operator');
+    if (onInsert) {
+      onInsert(content);
+    } else {
+      sendMessage(content, 'operator');
+    }
     setIsOpen(false);
     setSearchQuery('');
   };
@@ -45,7 +53,7 @@ export const MacrosQuickAccess: React.FC = () => {
           variant="ghost" 
           size="icon" 
           className="text-casino-text hover:text-casino-gold hover:bg-transparent"
-          title="Mensajes rápidos"
+          title="Biblioteca de mensajes rápidos"
         >
           <MessageSquarePlus size={20} />
         </Button>
@@ -55,7 +63,7 @@ export const MacrosQuickAccess: React.FC = () => {
         className="bg-casino-dark border-t border-casino-secondary text-casino-text h-64 pt-4"
       >
         <SheetHeader className="mb-2">
-          <SheetTitle className="text-casino-gold text-left">Mensajes Rápidos</SheetTitle>
+          <SheetTitle className="text-casino-gold text-left">Biblioteca de Mensajes</SheetTitle>
         </SheetHeader>
         
         <div className="mb-4">
