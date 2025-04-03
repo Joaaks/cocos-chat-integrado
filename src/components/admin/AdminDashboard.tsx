@@ -6,7 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import { OperatorsManagement } from './OperatorsManagement';
 import { AnalyticsPanel } from './AnalyticsPanel';
 import { UserDatabase } from './UserDatabase';
-import { Settings, Users, BarChart3, Database, LogOut } from 'lucide-react';
+import { ChatsMonitor } from './ChatsMonitor';
+import { Settings, Users, BarChart3, Database, MessageSquare, LogOut } from 'lucide-react';
 
 export const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -40,6 +41,10 @@ export const AdminDashboard = () => {
             <Database className="mr-2 h-4 w-4" />
             Base de Datos
           </TabsTrigger>
+          <TabsTrigger value="chats" className="data-[state=active]:bg-casino-dark data-[state=active]:text-casino-gold">
+            <MessageSquare className="mr-2 h-4 w-4" />
+            Chats
+          </TabsTrigger>
           <TabsTrigger value="analytics" className="data-[state=active]:bg-casino-dark data-[state=active]:text-casino-gold">
             <BarChart3 className="mr-2 h-4 w-4" />
             Estadísticas
@@ -52,6 +57,10 @@ export const AdminDashboard = () => {
         
         <TabsContent value="database" className="flex-1 p-6 overflow-auto">
           <UserDatabase />
+        </TabsContent>
+        
+        <TabsContent value="chats" className="flex-1 p-6 overflow-auto">
+          <ChatsMonitor />
         </TabsContent>
         
         <TabsContent value="analytics" className="flex-1 p-6 overflow-auto">

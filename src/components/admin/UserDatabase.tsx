@@ -14,6 +14,7 @@ type User = {
   lastActive: Date;
   timeOnSite: number; // in minutes
   operator: string;
+  url: string; // URL de origen del usuario
 };
 
 // Mock data - in a real app this would come from a database
@@ -25,7 +26,8 @@ const mockUsers: User[] = [
     registrationDate: new Date('2023-09-10'),
     lastActive: new Date('2023-11-15'),
     timeOnSite: 45,
-    operator: 'operador1'
+    operator: 'operador1',
+    url: 'https://casino1.com'
   },
   {
     id: '2',
@@ -34,7 +36,8 @@ const mockUsers: User[] = [
     registrationDate: new Date('2023-10-05'),
     lastActive: new Date('2023-11-14'),
     timeOnSite: 120,
-    operator: 'operador2'
+    operator: 'operador2',
+    url: 'https://casino2.com'
   },
   {
     id: '3',
@@ -43,7 +46,8 @@ const mockUsers: User[] = [
     registrationDate: new Date('2023-07-22'),
     lastActive: new Date('2023-11-12'),
     timeOnSite: 75,
-    operator: 'operador1'
+    operator: 'operador1',
+    url: 'https://casino1.com'
   },
 ];
 
@@ -55,13 +59,14 @@ export const UserDatabase = () => {
   const filteredUsers = users.filter(user => 
     user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
     user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    user.operator.toLowerCase().includes(searchQuery.toLowerCase())
+    user.operator.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.url.toLowerCase().includes(searchQuery.toLowerCase()) // Incluir URL en la búsqueda
   );
   
   // Function to export user data as CSV
   const exportToCSV = () => {
     // Headers for CSV file
-    const headers = ['ID', 'Usuario', 'Email', 'Fecha de Registro', 'Última Actividad', 'Tiempo en Sitio (min)', 'Operador'];
+    const headers = ['ID', 'Usuario', 'Email', 'Fecha de Registro', 'Última Actividad', 'Tiempo en Sitio (min)', 'Operador', 'URL de Origen'];
     
     // Map users to CSV rows
     const userRows = filteredUsers.map(user => [
@@ -71,7 +76,8 @@ export const UserDatabase = () => {
       user.registrationDate.toLocaleDateString(),
       user.lastActive.toLocaleDateString(),
       user.timeOnSite.toString(),
-      user.operator
+      user.operator,
+      user.url
     ]);
     
     // Combine headers and rows
@@ -130,6 +136,7 @@ export const UserDatabase = () => {
                   <TableHead className="text-casino-gold">Última Actividad</TableHead>
                   <TableHead className="text-casino-gold">Tiempo en Sitio</TableHead>
                   <TableHead className="text-casino-gold">Operador</TableHead>
+                  <TableHead className="text-casino-gold">URL de Origen</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -141,11 +148,12 @@ export const UserDatabase = () => {
                     <TableCell>{user.lastActive.toLocaleDateString()}</TableCell>
                     <TableCell>{user.timeOnSite} min</TableCell>
                     <TableCell>{user.operator}</TableCell>
+                    <TableCell>{user.url}</TableCell>
                   </TableRow>
                 ))}
                 {filteredUsers.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-4">
+                    <TableCell colSpan={7} className="text-center py-4">
                       No se encontraron usuarios que coincidan con la búsqueda
                     </TableCell>
                   </TableRow>
