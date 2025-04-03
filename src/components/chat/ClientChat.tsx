@@ -9,7 +9,6 @@ import { cn } from '@/lib/utils';
 export const ClientChat = () => {
   const { state } = useChat();
   const { isOpen, isMinimized, currentUser } = state;
-  const [isLoginOpen, setIsLoginOpen] = useState(false);
 
   // Reset login state when user is logged in
   useEffect(() => {
@@ -20,15 +19,11 @@ export const ClientChat = () => {
 
   // Si no está logueado y se abre el chat, mostramos el formulario de login
   const showLoginForm = !currentUser && isOpen;
-
-  // Manejador para cuando se selecciona la opción de login
-  const handleLoginClick = () => {
-    setIsLoginOpen(true);
-  };
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
 
   return (
     <>
-      <ChatButton onLoginClick={handleLoginClick} />
+      <ChatButton />
       
       {isOpen && (
         <div
