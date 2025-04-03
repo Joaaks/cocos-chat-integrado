@@ -9,8 +9,10 @@ import { UserRequestPanel } from './UserRequestPanel';
 import { MacrosPanel } from './MacrosPanel';
 
 export const OperatorPanel = () => {
-  const { state, userRequest } = useChat();
+  const chatContext = useChat();
+  const { state } = chatContext;
   const { selectedUser } = state;
+  const userRequest = chatContext.userRequest || state.userRequest; // Get userRequest from either context property or state
 
   return (
     <div className="h-screen flex flex-col bg-casino-dark text-casino-text">

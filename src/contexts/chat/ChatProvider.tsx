@@ -172,6 +172,7 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         addMacro,
         editMacro,
         deleteMacro,
+        userRequest: state.userRequest, // Expose userRequest from the state
       }}
     >
       {children}

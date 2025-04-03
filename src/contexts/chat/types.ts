@@ -40,6 +40,7 @@ export interface ChatContextProps {
   addMacro: (title: string, content: string) => void;
   editMacro: (id: string, title: string, content: string) => void;
   deleteMacro: (id: string) => void;
+  userRequest: UserRequest | null; // Add userRequest property to the context
 }
 
 export interface ChatState {
