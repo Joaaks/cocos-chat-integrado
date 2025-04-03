@@ -13,7 +13,15 @@ const OperatorPage = () => {
     return <Navigate to="/operator-login" replace />;
   }
 
-  return <OperatorPanel />;
+  return (
+    <div className="h-screen flex flex-col">
+      <div className="bg-casino-primary p-3 flex items-center justify-between border-b border-casino-secondary">
+        <h1 className="text-casino-gold font-bold text-xl">Panel de Operador</h1>
+        <img src="/images/cocosbet-mascot.png" alt="Cocosbet Mascot" className="h-10" />
+      </div>
+      <OperatorPanel />
+    </div>
+  );
 };
 
 export default OperatorPage;

@@ -92,7 +92,7 @@ export const ClientChat = () => {
           {showLoginForm ? (
             <div className="h-full p-4 overflow-y-auto">
               <div className="flex justify-center mb-6">
-                <img src="/images/cocosbet-logo.svg" alt="Cocosbet" className="h-8" />
+                <img src="/images/cocosbet-mascot.png" alt="Cocosbet" className="h-20" />
               </div>
               <LoginForm />
             </div>

@@ -127,14 +127,14 @@ export const ChatWindow = () => {
             </div>
           </div>
           <div>
-            <img src="/images/cocosbet-logo.svg" alt="Cocosbet" className="h-6" />
+            <img src="/images/cocosbet-mascot.png" alt="Cocosbet" className="h-8" />
           </div>
         </div>
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-2 bg-casino-dark">
         {messages.length === 0 ? <div className="flex flex-col items-center justify-center h-full text-center">
-            <img src="/images/cocosbet-logo.svg" alt="Cocosbet" className="h-12 mb-4" />
+            <img src="/images/cocosbet-mascot.png" alt="Cocosbet" className="h-24 mb-4" />
             <h3 className="text-lg font-medium text-casino-accent mb-2">¡Bienvenido al Chat de Soporte!</h3>
             <p className="text-sm text-gray-400 mb-4 max-w-xs">
               Nuestros operadores están listos para atenderte. ¿En qué podemos ayudarte hoy?
