@@ -1,16 +1,15 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { useChat } from '@/contexts/ChatContext';
 import { ChatButton } from './ChatButton';
 import { ChatWindow } from './ChatWindow';
 import { LoginForm } from '../auth/LoginForm';
 import { cn } from '@/lib/utils';
-import { Bell } from 'lucide-react';
 
 export const ClientChat = () => {
   const { state, toggleChat, maximizeChat } = useChat();
   const { isOpen, isMinimized, currentUser, messages } = state;
   const prevMessagesLengthRef = useRef(messages.length);
-  const hasNotification = useRef(false);
 
   // Reset login state when user is logged in
   useEffect(() => {
@@ -24,18 +23,9 @@ export const ClientChat = () => {
     if (messages.length > prevMessagesLengthRef.current) {
       const lastMessage = messages[messages.length - 1];
       
-      // Only show notification effect when chat is closed
+      // Only auto-open chat when operator sends a message and chat is closed
       if (lastMessage && lastMessage.sender === 'operator' && !isOpen) {
-        // Open the chat automatically
         toggleChat();
-        
-        // Mark that there's a notification to show the animation effect
-        hasNotification.current = true;
-        
-        // After 5 seconds, remove the effect
-        setTimeout(() => {
-          hasNotification.current = false;
-        }, 5000);
       }
     }
     prevMessagesLengthRef.current = messages.length;
@@ -78,8 +68,7 @@ export const ClientChat = () => {
         <div
           className={cn(
             "fixed bottom-20 right-5 z-40 w-[350px] h-[500px] bg-casino-dark rounded-lg overflow-hidden shadow-xl casino-shadow transition-all duration-300",
-            isMinimized ? "h-0 opacity-0" : "opacity-100",
-            hasNotification.current && !isMinimized ? "animate-notification" : ""
+            isMinimized ? "h-0 opacity-0" : "opacity-100"
           )}
         >
           {showLoginForm ? (
