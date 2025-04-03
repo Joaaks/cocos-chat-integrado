@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { useChat } from '@/contexts/ChatContext';
 import { ChatButton } from './ChatButton';
@@ -25,28 +24,22 @@ export const ClientChat = () => {
     if (messages.length > prevMessagesLengthRef.current) {
       const lastMessage = messages[messages.length - 1];
       
-      // Si es un mensaje del operador y el chat está cerrado o minimizado
-      if (lastMessage && lastMessage.sender === 'operator' && (!isOpen || isMinimized)) {
-        // Abrir el chat automáticamente
-        if (!isOpen) {
-          toggleChat();
-        }
-        // Maximizar si está minimizado
-        if (isMinimized) {
-          maximizeChat();
-        }
+      // Only show notification effect when chat is closed
+      if (lastMessage && lastMessage.sender === 'operator' && !isOpen) {
+        // Open the chat automatically
+        toggleChat();
         
-        // Marcar que hay una notificación para mostrar el efecto de animación
+        // Mark that there's a notification to show the animation effect
         hasNotification.current = true;
         
-        // Después de 5 segundos, quitar el efecto
+        // After 5 seconds, remove the effect
         setTimeout(() => {
           hasNotification.current = false;
         }, 5000);
       }
     }
     prevMessagesLengthRef.current = messages.length;
-  }, [messages, isOpen, isMinimized, toggleChat, maximizeChat]);
+  }, [messages, isOpen, toggleChat]);
 
   // Listen for external control events
   useEffect(() => {
@@ -86,7 +79,7 @@ export const ClientChat = () => {
           className={cn(
             "fixed bottom-20 right-5 z-40 w-[350px] h-[500px] bg-casino-dark rounded-lg overflow-hidden shadow-xl casino-shadow transition-all duration-300",
             isMinimized ? "h-0 opacity-0" : "opacity-100",
-            hasNotification.current && "animate-notification"
+            hasNotification.current && !isMinimized ? "animate-notification" : ""
           )}
         >
           {showLoginForm ? (
