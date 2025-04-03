@@ -7,7 +7,7 @@ import { LoginForm } from '../auth/LoginForm';
 import { cn } from '@/lib/utils';
 
 export const ClientChat = () => {
-  const { state } = useChat();
+  const { state, toggleChat } = useChat();
   const { isOpen, isMinimized, currentUser } = state;
 
   // Reset login state when user is logged in
@@ -16,6 +16,31 @@ export const ClientChat = () => {
       setIsLoginOpen(false);
     }
   }, [currentUser]);
+
+  // Listen for external control events
+  useEffect(() => {
+    const handleOpenChat = () => {
+      if (!isOpen) {
+        toggleChat();
+      }
+    };
+
+    const handleCloseChat = () => {
+      if (isOpen) {
+        toggleChat();
+      }
+    };
+
+    // Add event listeners
+    document.addEventListener('casino-chat-open', handleOpenChat);
+    document.addEventListener('casino-chat-close', handleCloseChat);
+
+    // Clean up
+    return () => {
+      document.removeEventListener('casino-chat-open', handleOpenChat);
+      document.removeEventListener('casino-chat-close', handleCloseChat);
+    };
+  }, [isOpen, toggleChat]);
 
   // Si no está logueado y se abre el chat, mostramos el formulario de login
   const showLoginForm = !currentUser && isOpen;

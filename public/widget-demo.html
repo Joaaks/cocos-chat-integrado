@@ -1,0 +1,92 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Casino Chat Widget Demo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .demo-container {
+      border: 1px solid #ddd;
+      padding: 20px;
+      border-radius: 4px;
+      margin: 20px 0;
+    }
+    button {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    pre {
+      background-color: #f5f5f5;
+      padding: 15px;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+    h1, h2 {
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>Casino Chat Widget Demo</h1>
+  
+  <div class="demo-container">
+    <h2>Widget Controls</h2>
+    <button onclick="window.CasinoChatWidget.open()">Open Chat</button>
+    <button onclick="window.CasinoChatWidget.close()">Close Chat</button>
+  </div>
+  
+  <div class="demo-container">
+    <h2>Installation Instructions</h2>
+    <p>Include the widget script at the end of your HTML body:</p>
+    <pre>&lt;script src="https://your-domain.com/casino-chat-widget.js"&gt;&lt;/script&gt;</pre>
+    
+    <p>Initialize the widget:</p>
+    <pre>&lt;script&gt;
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initialize with default container
+    window.CasinoChatWidget.init();
+    
+    // Or specify a custom container ID
+    // window.CasinoChatWidget.init('my-custom-container');
+  });
+&lt;/script&gt;</pre>
+  </div>
+  
+  <div class="demo-container">
+    <h2>API Reference</h2>
+    <ul>
+      <li><strong>init(containerId)</strong>: Initialize the widget with an optional custom container ID</li>
+      <li><strong>open()</strong>: Open the chat window</li>
+      <li><strong>close()</strong>: Close the chat window</li>
+    </ul>
+  </div>
+  
+  <!-- Widget container will be created automatically if not present -->
+  <div id="casino-chat-widget-container"></div>
+  
+  <!-- Widget script (in production this would be loaded from a CDN) -->
+  <script src="/casino-chat-widget.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize the widget
+      window.CasinoChatWidget.init();
+    });
+  </script>
+</body>
+</html>
