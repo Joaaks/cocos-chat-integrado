@@ -98,15 +98,20 @@ export const ChatWindow = () => {
   }
   
   return <div className="flex flex-col h-full animate-fade-in">
-      {/* Chat header */}
-      <div className="p-4 border-b border-casino-secondary text-casino-text bg-casino-primary">
-        <div className="flex items-center">
-          <div className="w-8 h-8 bg-casino-gold rounded-full flex items-center justify-center text-casino-primary mr-3">
-            <User size={18} />
+      {/* Chat header with logo */}
+      <div className="p-3 border-b border-casino-secondary text-casino-text bg-casino-primary">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            <div className="w-8 h-8 bg-casino-gold rounded-full flex items-center justify-center text-white mr-3">
+              <User size={18} />
+            </div>
+            <div>
+              <h3 className="font-medium text-casino-gold">{operatorName}</h3>
+              <p className="text-xs text-gray-400">En línea</p>
+            </div>
           </div>
           <div>
-            <h3 className="font-medium text-casino-gold">{operatorName}</h3>
-            <p className="text-xs text-gray-400">En línea</p>
+            <img src="/images/cocosbet-logo.svg" alt="Cocosbet" className="h-6" />
           </div>
         </div>
       </div>
@@ -114,9 +119,7 @@ export const ChatWindow = () => {
       {/* Messages container */}
       <div className="flex-1 overflow-y-auto p-4 space-y-2 bg-casino-dark">
         {messages.length === 0 ? <div className="flex flex-col items-center justify-center h-full text-center">
-            <div className="w-16 h-16 rounded-full gold-gradient flex items-center justify-center mb-4">
-              <MessageCircle className="text-casino-primary" size={32} />
-            </div>
+            <img src="/images/cocosbet-logo.svg" alt="Cocosbet" className="h-12 mb-4" />
             <h3 className="text-lg font-medium text-casino-gold mb-2">¡Bienvenido al Chat de Soporte!</h3>
             <p className="text-sm text-gray-400 mb-4 max-w-xs">
               Nuestros operadores están listos para atenderte. ¿En qué podemos ayudarte hoy?
@@ -147,13 +150,13 @@ export const ChatWindow = () => {
           <div className="flex items-center space-x-2">
             <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*" className="hidden" />
             
-            <Button type="button" variant="outline" size="icon" onClick={triggerFileInput} className="bg-casino-secondary border-casino-secondary text-casino-text hover:bg-casino-gold hover:text-casino-primary hover:border-casino-gold" title="Enviar Imagen" disabled={isUploading}>
+            <Button type="button" variant="outline" size="icon" onClick={triggerFileInput} className="bg-casino-secondary border-casino-secondary text-casino-text hover:bg-casino-gold hover:text-white hover:border-casino-gold" title="Enviar Imagen" disabled={isUploading}>
               {isUploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Image size={18} />}
             </Button>
             
             <div className="flex-1"></div>
             
-            <Button type="submit" size="icon" disabled={!message.trim() || isUploading} className={cn("gold-gradient text-casino-primary", (!message.trim() || isUploading) && "opacity-50 cursor-not-allowed")}>
+            <Button type="submit" size="icon" disabled={!message.trim() || isUploading} className={cn("gold-gradient text-white", (!message.trim() || isUploading) && "opacity-50 cursor-not-allowed")}>
               <SendIcon size={18} />
             </Button>
           </div>
