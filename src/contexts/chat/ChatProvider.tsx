@@ -1,6 +1,6 @@
 
 import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
-import { Message, User } from '@/types/chat';
+import { Message, User, Macro } from '@/types/chat';
 import { v4 as uuidv4 } from 'uuid';
 import { useToast } from '@/hooks/use-toast';
 import { ChatState, ChatAction, ChatContextProps } from './types';
@@ -93,6 +93,39 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     });
   };
 
+  // Nuevas funciones para manejar macros
+  const addMacro = (title: string, content: string) => {
+    dispatch({ type: 'ADD_MACRO', payload: { title, content } });
+    
+    toast({
+      title: "Macro Creado",
+      description: `El macro "${title}" ha sido creado correctamente.`,
+    });
+  };
+
+  const editMacro = (id: string, title: string, content: string) => {
+    dispatch({ type: 'EDIT_MACRO', payload: { id, title, content } });
+    
+    toast({
+      title: "Macro Actualizado",
+      description: `El macro "${title}" ha sido actualizado correctamente.`,
+    });
+  };
+
+  const deleteMacro = (id: string) => {
+    // Encontrar el título antes de eliminarlo para el mensaje
+    const macroToDelete = state.macros.find(macro => macro.id === id);
+    
+    dispatch({ type: 'DELETE_MACRO', payload: id });
+    
+    if (macroToDelete) {
+      toast({
+        title: "Macro Eliminado",
+        description: `El macro "${macroToDelete.title}" ha sido eliminado.`,
+      });
+    }
+  };
+
   // Función para simular carga de imágenes
   const uploadImage = async (file: File): Promise<string> => {
     return new Promise((resolve) => {
@@ -126,6 +159,9 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         logoutUser,
         uploadImage,
         assignClientToOperator,
+        addMacro,
+        editMacro,
+        deleteMacro,
       }}
     >
       {children}

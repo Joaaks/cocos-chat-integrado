@@ -31,4 +31,28 @@ export const initialState = {
   currentUser: null,
   clients: [], // Inicializamos la lista de clientes
   pendingClients: [], // Inicializamos la lista de clientes pendientes
+  macros: [
+    // Ejemplos de macros precargados
+    {
+      id: '1',
+      title: 'Saludo',
+      content: '¡Hola! Bienvenido a nuestro servicio de atención al cliente. ¿En qué puedo ayudarte hoy?',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    {
+      id: '2',
+      title: 'Despedida',
+      content: 'Ha sido un placer atenderte. ¡Que tengas un excelente día! Si necesitas algo más, no dudes en contactarnos nuevamente.',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    {
+      id: '3',
+      title: 'Promoción actual',
+      content: 'Actualmente tenemos una promoción especial: 100% de bonificación en tu primer depósito hasta $500. ¿Te gustaría aprovecharla?',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }
+  ],
 };

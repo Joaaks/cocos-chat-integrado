@@ -2,10 +2,11 @@
 import React, { useState } from 'react';
 import { useChat } from '@/contexts/ChatContext';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { Users, User } from 'lucide-react';
+import { Users, User, MessageSquare } from 'lucide-react';
 import { UsersList } from './UsersList';
 import { ChatArea } from './ChatArea';
 import { UserRequestPanel } from './UserRequestPanel';
+import { MacrosPanel } from './MacrosPanel';
 
 export const OperatorPanel = () => {
   const { state, sendMessage, setSelectedUser, uploadImage } = useChat();
@@ -28,6 +29,10 @@ export const OperatorPanel = () => {
             Solicitudes
             {userRequest && <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-casino-accent text-white">1</span>}
           </TabsTrigger>
+          <TabsTrigger value="macros" className="data-[state=active]:bg-casino-dark data-[state=active]:text-casino-gold">
+            <MessageSquare className="mr-2 h-4 w-4" />
+            Mensajes Automáticos
+          </TabsTrigger>
         </TabsList>
         
         <TabsContent value="chats" className="flex-1 flex p-0 m-0">
@@ -46,6 +51,10 @@ export const OperatorPanel = () => {
         
         <TabsContent value="requests" className="flex-1 p-0 m-0">
           <UserRequestPanel userRequest={userRequest} />
+        </TabsContent>
+
+        <TabsContent value="macros" className="flex-1 p-0 m-0">
+          <MacrosPanel />
         </TabsContent>
       </Tabs>
     </div>

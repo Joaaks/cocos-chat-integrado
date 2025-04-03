@@ -1,7 +1,7 @@
 
 import { v4 as uuidv4 } from 'uuid';
 import { ChatState, ChatAction } from './types';
-import { UserRequest, User } from '@/types/chat';
+import { UserRequest, User, Macro } from '@/types/chat';
 
 // Reducer function
 export const chatReducer = (state: ChatState, action: ChatAction): ChatState => {
@@ -189,6 +189,37 @@ export const chatReducer = (state: ChatState, action: ChatAction): ChatState => 
       return {
         ...state,
         pendingClients: [...state.pendingClients, action.payload],
+      };
+    case 'ADD_MACRO':
+      const newMacro: Macro = {
+        id: uuidv4(),
+        title: action.payload.title,
+        content: action.payload.content,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      return {
+        ...state,
+        macros: [...state.macros, newMacro],
+      };
+    case 'EDIT_MACRO':
+      return {
+        ...state,
+        macros: state.macros.map(macro => 
+          macro.id === action.payload.id 
+            ? { 
+                ...macro, 
+                title: action.payload.title, 
+                content: action.payload.content,
+                updatedAt: new Date() 
+              } 
+            : macro
+        ),
+      };
+    case 'DELETE_MACRO':
+      return {
+        ...state,
+        macros: state.macros.filter(macro => macro.id !== action.payload),
       };
     default:
       return state;

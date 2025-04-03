@@ -29,6 +29,14 @@ export interface User {
   url?: string; // URL asociada al operador o desde donde accedió el cliente
 }
 
+export interface Macro {
+  id: string;
+  title: string;
+  content: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface ChatState {
   messages: Message[];
   userRequest: UserRequest | null;
@@ -42,4 +50,5 @@ export interface ChatState {
   currentUser: User | null;
   clients: User[]; // Lista de clientes registrados
   pendingClients: User[]; // Clientes sin operador asignado
+  macros: Macro[]; // Lista de macros del operador
 }

@@ -1,5 +1,5 @@
 
-import { Message, UserRequest, User } from '@/types/chat';
+import { Message, UserRequest, User, Macro } from '@/types/chat';
 
 // Define actions
 export type ChatAction =
@@ -16,7 +16,10 @@ export type ChatAction =
   | { type: 'LOGIN_USER'; payload: User }
   | { type: 'LOGOUT_USER' }
   | { type: 'ASSIGN_CLIENT_TO_OPERATOR'; payload: { clientId: string, operatorId: string } }
-  | { type: 'ADD_PENDING_CLIENT'; payload: User };
+  | { type: 'ADD_PENDING_CLIENT'; payload: User }
+  | { type: 'ADD_MACRO'; payload: Omit<Macro, 'id' | 'createdAt' | 'updatedAt'> }
+  | { type: 'EDIT_MACRO'; payload: { id: string, title: string, content: string } }
+  | { type: 'DELETE_MACRO'; payload: string };
 
 // Context interface
 export interface ChatContextProps {
@@ -34,6 +37,9 @@ export interface ChatContextProps {
   logoutUser: () => void;
   uploadImage: (file: File) => Promise<string>;
   assignClientToOperator: (clientId: string, operatorId: string) => void;
+  addMacro: (title: string, content: string) => void;
+  editMacro: (id: string, title: string, content: string) => void;
+  deleteMacro: (id: string) => void;
 }
 
 export interface ChatState {
@@ -49,4 +55,5 @@ export interface ChatState {
   currentUser: User | null;
   clients: User[]; // Lista de clientes registrados
   pendingClients: User[]; // Clientes sin operador asignado
+  macros: Macro[]; // Lista de macros del operador
 }
