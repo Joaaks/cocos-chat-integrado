@@ -71,22 +71,64 @@ export const chatReducer = (state: ChatState, action: ChatAction): ChatState => 
         url: currentUrl // Almacenamos la URL desde donde se registró el cliente
       };
       
-      return {
-        ...state,
-        userRequest: newUserRequest,
-        isRequestingUser: false,
-        pendingClients: [...state.pendingClients, newClient],
-        messages: [
-          ...state.messages,
-          {
-            id: uuidv4(),
-            content: `Solicitud de usuario enviada para: ${action.payload.username}`,
-            sender: 'client',
-            timestamp: new Date(),
-            isRead: false,
-          },
-        ],
-      };
+      // Check if this client should be auto-assigned to an operator based on URL
+      // This logic matches what we have in ClientAssignment component
+      // In a real app, this would come from a database query
+      const operatorsForUrl = [
+        {
+          id: '1',
+          url: 'https://casino-gold.com'
+        },
+        {
+          id: '2',
+          url: 'https://casino-vip.com'
+        }
+      ];
+      
+      // Try to auto-assign based on URL
+      const matchingOperator = operatorsForUrl.find(operator => 
+        currentUrl.includes(operator.url)
+      );
+      
+      if (matchingOperator) {
+        // If there's a matching operator, assign the client directly
+        newClient.operatorId = matchingOperator.id;
+        
+        return {
+          ...state,
+          userRequest: newUserRequest,
+          isRequestingUser: false,
+          clients: [...state.clients, newClient], // Add directly to assigned clients
+          messages: [
+            ...state.messages,
+            {
+              id: uuidv4(),
+              content: `Solicitud de usuario enviada para: ${action.payload.username}`,
+              sender: 'client',
+              timestamp: new Date(),
+              isRead: false,
+            },
+          ],
+        };
+      } else {
+        // If no matching operator, add to pending clients for manual assignment
+        return {
+          ...state,
+          userRequest: newUserRequest,
+          isRequestingUser: false,
+          pendingClients: [...state.pendingClients, newClient],
+          messages: [
+            ...state.messages,
+            {
+              id: uuidv4(),
+              content: `Solicitud de usuario enviada para: ${action.payload.username}`,
+              sender: 'client',
+              timestamp: new Date(),
+              isRead: false,
+            },
+          ],
+        };
+      }
     case 'SET_CLIENT_NAME':
       return {
         ...state,

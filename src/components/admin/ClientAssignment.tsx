@@ -37,6 +37,18 @@ export const ClientAssignment = () => {
   
   const [selectedOperator, setSelectedOperator] = useState<string>('');
 
+  // Filter clients that don't match any operator's URL
+  // These are the clients that need manual assignment by admin
+  const clientsToAssign = pendingClients.filter(client => {
+    // If client has no URL, include them for manual assignment
+    if (!client.url) return true;
+    
+    // Check if client URL doesn't match any operator URL
+    return !operators.some(operator => 
+      client.url && operator.url && client.url.includes(operator.url)
+    );
+  });
+
   const handleAssignClient = (client: User) => {
     if (!selectedOperator) {
       toast({
@@ -65,7 +77,7 @@ export const ClientAssignment = () => {
     });
   };
 
-  if (pendingClients.length === 0) {
+  if (clientsToAssign.length === 0) {
     return (
       <div className="space-y-6">
         <Card>
@@ -77,7 +89,7 @@ export const ClientAssignment = () => {
               <Users className="h-12 w-12 text-gray-400 mb-4" />
               <h3 className="text-xl font-medium text-casino-gold mb-2">No hay clientes pendientes</h3>
               <p className="text-gray-400 max-w-md">
-                Actualmente no hay clientes pendientes de asignación. Los nuevos clientes aparecerán aquí cuando se registren.
+                Actualmente no hay clientes pendientes de asignación. Los nuevos clientes que no coincidan con las URLs de los operadores aparecerán aquí.
               </p>
             </div>
           </CardContent>
@@ -123,7 +135,7 @@ export const ClientAssignment = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {pendingClients.map((client) => (
+                {clientsToAssign.map((client) => (
                   <TableRow key={client.id} className="border-b border-casino-secondary">
                     <TableCell>{client.username}</TableCell>
                     <TableCell>{client.email}</TableCell>
