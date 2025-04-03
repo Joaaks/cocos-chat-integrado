@@ -64,12 +64,12 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				casino: {
-					dark: '#1A1A2E',
-					primary: '#121212',
-					secondary: '#2C2C44',
-					gold: '#FFD700',
-					accent: '#E63946',
-					text: '#F1F1F1'
+					dark: '#1A1F2C', /* Cambio a azul oscuro de cocosbet */
+					primary: '#0F1420', /* Cambio a negro azulado de cocosbet */
+					secondary: '#2A3142', /* Azul oscuro medio para contraste */
+					gold: '#9b87f5', /* Cambio a morado de cocosbet */
+					accent: '#33C3F0', /* Cambio a celeste para acentos */
+					text: '#F1F1F1' /* Mantenemos texto claro */
 				}
 			},
 			borderRadius: {

@@ -48,11 +48,11 @@
 }
 
 .gold-gradient {
-  background: linear-gradient(90deg, #F9D166 0%, #FFD700 50%, #F9D166 100%);
+  background: linear-gradient(90deg, #8975de 0%, #9b87f5 50%, #aa96fd 100%);
 }
 
 .casino-shadow {
-  box-shadow: 0 4px 20px rgba(255, 215, 0, 0.15);
+  box-shadow: 0 4px 20px rgba(155, 135, 245, 0.2);
 }
 
 .message-bubble-client {
@@ -61,6 +61,6 @@
 }
 
 .message-bubble-operator {
-  @apply bg-casino-gold text-casino-primary font-medium rounded-lg p-3 max-w-md break-words;
+  @apply bg-casino-gold text-white font-medium rounded-lg p-3 max-w-md break-words;
   border-bottom-right-radius: 0;
 }
