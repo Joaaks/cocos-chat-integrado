@@ -63,16 +63,13 @@ export const LoginForm = () => {
   return (
     <Card className="w-full max-w-md mx-auto animate-fade-in">
       <CardHeader className="text-center">
+        <div className="flex justify-center mb-4">
+          <img src="/images/cocosbet-full-logo.png" alt="Cocosbet" className="h-16" />
+        </div>
         <CardTitle className="text-2xl text-casino-gold">Iniciar Sesión</CardTitle>
         <CardDescription>Ingresa tus credenciales para acceder</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="mb-6 flex items-center justify-center">
-          <div className="bg-casino-gold p-3 rounded-full">
-            <UserIcon className="w-8 h-8 text-casino-primary" />
-          </div>
-        </div>
-
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <label htmlFor="username" className="text-sm font-medium text-casino-text">

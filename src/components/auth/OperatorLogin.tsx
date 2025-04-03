@@ -57,6 +57,9 @@ export const OperatorLogin = () => {
   return (
     <Card className="w-full max-w-md mx-auto animate-fade-in">
       <CardHeader className="text-center">
+        <div className="flex justify-center mb-4">
+          <img src="/images/cocosbet-full-logo.png" alt="Cocosbet" className="h-16" />
+        </div>
         <CardTitle className="text-2xl text-casino-gold">Panel de Operador</CardTitle>
         <CardDescription>Ingresa tus credenciales para acceder</CardDescription>
       </CardHeader>
