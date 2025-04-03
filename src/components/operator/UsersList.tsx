@@ -21,9 +21,11 @@ export const UsersList: React.FC<UsersListProps> = ({
   const { state } = useChat();
   const { clients, currentUser } = state;
   
-  // Filter clients that are assigned to this operator
+  // Filter clients that are assigned to this operator AND match the operator's URL
   const operatorClients = clients.filter(client => 
-    currentUser?.role === 'operator' && client.operatorId === currentUser.id
+    currentUser?.role === 'operator' && 
+    client.operatorId === currentUser.id &&
+    (client.url === currentUser.url || !currentUser.url) // Match URL o permitir si el operador no tiene URL específica
   );
 
   if (!currentUser || currentUser.role !== 'operator') {
@@ -43,6 +45,9 @@ export const UsersList: React.FC<UsersListProps> = ({
       <div className="p-4 border-b border-casino-secondary">
         <h2 className="text-lg font-semibold text-casino-gold">Tus Clientes</h2>
         <p className="text-sm text-gray-400">Gestiona tus conversaciones</p>
+        {currentUser.url && (
+          <p className="text-xs text-casino-gold mt-1">URL: {currentUser.url}</p>
+        )}
       </div>
       
       <ScrollArea className="flex-1">

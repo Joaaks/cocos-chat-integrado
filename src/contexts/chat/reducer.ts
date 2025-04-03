@@ -48,6 +48,7 @@ export const chatReducer = (state: ChatState, action: ChatAction): ChatState => 
         isRequestingUser: false,
       };
     case 'SUBMIT_USER_REQUEST':
+      const currentUrl = window.location.origin;
       const newUserRequest: UserRequest = {
         id: uuidv4(),
         username: action.payload.username,
@@ -66,7 +67,8 @@ export const chatReducer = (state: ChatState, action: ChatAction): ChatState => 
         phoneNumber: action.payload.phoneNumber,
         role: 'client',
         isLoggedIn: false,
-        operatorId: null
+        operatorId: null,
+        url: currentUrl // Almacenamos la URL desde donde se registró el cliente
       };
       
       return {
@@ -101,9 +103,14 @@ export const chatReducer = (state: ChatState, action: ChatAction): ChatState => 
         selectedUser: action.payload,
       };
     case 'LOGIN_USER':
+      const userWithUrl = {
+        ...action.payload,
+        url: action.payload.url || window.location.origin, // Asegura que la URL siempre esté presente
+      };
+      
       return {
         ...state,
-        currentUser: action.payload,
+        currentUser: userWithUrl,
         clientName: action.payload.username,
       };
     case 'LOGOUT_USER':

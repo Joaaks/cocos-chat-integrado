@@ -26,6 +26,7 @@ export interface User {
   role: 'client' | 'operator';
   isLoggedIn: boolean;
   operatorId?: string | null; // ID del operador asignado al cliente (solo para clientes)
+  url?: string; // URL asociada al operador o desde donde accedió el cliente
 }
 
 export interface ChatState {

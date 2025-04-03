@@ -16,6 +16,7 @@ import {
 import { Plus, Edit, RefreshCcw, Trash2 } from 'lucide-react';
 import { useChat } from '@/contexts/ChatContext';
 import { v4 as uuidv4 } from 'uuid';
+import { Label } from '@/components/ui/label';
 
 type Operator = {
   id: string;
@@ -23,6 +24,7 @@ type Operator = {
   email: string;
   createdAt: Date;
   clientCount: number;
+  url: string; // Nueva propiedad para la URL asociada
 };
 
 // This would come from a database in a real application
@@ -32,14 +34,16 @@ const initialOperators: Operator[] = [
     username: 'operador1',
     email: 'operador1@example.com',
     createdAt: new Date('2023-08-15'),
-    clientCount: 5
+    clientCount: 5,
+    url: 'https://casino-gold.com'
   },
   {
     id: '2',
     username: 'operador2',
     email: 'operador2@example.com',
     createdAt: new Date('2023-10-22'),
-    clientCount: 3
+    clientCount: 3,
+    url: 'https://casino-vip.com'
   }
 ];
 
@@ -48,12 +52,13 @@ export const OperatorsManagement = () => {
   const [newUsername, setNewUsername] = useState('');
   const [newEmail, setNewEmail] = useState('');
   const [newPassword, setNewPassword] = useState('');
+  const [newUrl, setNewUrl] = useState('');
   const [resetPasswordId, setResetPasswordId] = useState<string | null>(null);
   const [newPasswordReset, setNewPasswordReset] = useState('');
   const { toast } = useToast();
 
   const handleCreateOperator = () => {
-    if (!newUsername || !newEmail || !newPassword) {
+    if (!newUsername || !newEmail || !newPassword || !newUrl) {
       toast({
         title: "Error",
         description: "Todos los campos son requeridos",
@@ -68,7 +73,8 @@ export const OperatorsManagement = () => {
       username: newUsername,
       email: newEmail,
       createdAt: new Date(),
-      clientCount: 0
+      clientCount: 0,
+      url: newUrl
     };
     
     setOperators([...operators, newOperator]);
@@ -82,6 +88,7 @@ export const OperatorsManagement = () => {
     setNewUsername('');
     setNewEmail('');
     setNewPassword('');
+    setNewUrl('');
   };
   
   const handleResetPassword = () => {
@@ -137,7 +144,7 @@ export const OperatorsManagement = () => {
               </DialogHeader>
               <div className="space-y-4 py-4">
                 <div className="space-y-2">
-                  <label htmlFor="username">Nombre de Usuario</label>
+                  <Label htmlFor="username">Nombre de Usuario</Label>
                   <Input
                     id="username"
                     value={newUsername}
@@ -147,7 +154,7 @@ export const OperatorsManagement = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="email">Correo Electrónico</label>
+                  <Label htmlFor="email">Correo Electrónico</Label>
                   <Input
                     id="email"
                     type="email"
@@ -158,7 +165,7 @@ export const OperatorsManagement = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="password">Contraseña</label>
+                  <Label htmlFor="password">Contraseña</Label>
                   <Input
                     id="password"
                     type="password"
@@ -167,6 +174,20 @@ export const OperatorsManagement = () => {
                     placeholder="Contraseña"
                     className="bg-casino-dark border-casino-gold"
                   />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="url">URL Asociada</Label>
+                  <Input
+                    id="url"
+                    type="url"
+                    value={newUrl}
+                    onChange={(e) => setNewUrl(e.target.value)}
+                    placeholder="https://ejemplo.com"
+                    className="bg-casino-dark border-casino-gold"
+                  />
+                  <p className="text-xs text-gray-300 mt-1">
+                    URL a la que este operador estará asociado
+                  </p>
                 </div>
               </div>
               <DialogFooter>
@@ -183,6 +204,7 @@ export const OperatorsManagement = () => {
                 <TableRow>
                   <TableHead className="text-casino-gold">Usuario</TableHead>
                   <TableHead className="text-casino-gold">Email</TableHead>
+                  <TableHead className="text-casino-gold">URL Asociada</TableHead>
                   <TableHead className="text-casino-gold">Fecha de Creación</TableHead>
                   <TableHead className="text-casino-gold">Clientes</TableHead>
                   <TableHead className="text-casino-gold text-right">Acciones</TableHead>
@@ -193,6 +215,9 @@ export const OperatorsManagement = () => {
                   <TableRow key={operator.id} className="border-b border-casino-secondary">
                     <TableCell>{operator.username}</TableCell>
                     <TableCell>{operator.email}</TableCell>
+                    <TableCell>
+                      <span className="max-w-[200px] truncate block">{operator.url}</span>
+                    </TableCell>
                     <TableCell>{operator.createdAt.toLocaleDateString()}</TableCell>
                     <TableCell>{operator.clientCount}</TableCell>
                     <TableCell className="text-right">
