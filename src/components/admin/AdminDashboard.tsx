@@ -7,7 +7,8 @@ import { OperatorsManagement } from './OperatorsManagement';
 import { AnalyticsPanel } from './AnalyticsPanel';
 import { UserDatabase } from './UserDatabase';
 import { ChatsMonitor } from './ChatsMonitor';
-import { Settings, Users, BarChart3, Database, MessageSquare, LogOut } from 'lucide-react';
+import { ClientAssignment } from './ClientAssignment';
+import { Settings, Users, BarChart3, Database, MessageSquare, LogOut, UserPlus } from 'lucide-react';
 
 export const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -37,6 +38,10 @@ export const AdminDashboard = () => {
             <Users className="mr-2 h-4 w-4" />
             Operadores
           </TabsTrigger>
+          <TabsTrigger value="clientAssignment" className="data-[state=active]:bg-casino-dark data-[state=active]:text-casino-gold">
+            <UserPlus className="mr-2 h-4 w-4" />
+            Asignar Clientes
+          </TabsTrigger>
           <TabsTrigger value="database" className="data-[state=active]:bg-casino-dark data-[state=active]:text-casino-gold">
             <Database className="mr-2 h-4 w-4" />
             Base de Datos
@@ -53,6 +58,10 @@ export const AdminDashboard = () => {
         
         <TabsContent value="operators" className="flex-1 p-6 overflow-auto">
           <OperatorsManagement />
+        </TabsContent>
+        
+        <TabsContent value="clientAssignment" className="flex-1 p-6 overflow-auto">
+          <ClientAssignment />
         </TabsContent>
         
         <TabsContent value="database" className="flex-1 p-6 overflow-auto">
