@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useChat } from '@/contexts/ChatContext';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Users, User, MessageSquare } from 'lucide-react';
@@ -9,8 +9,8 @@ import { UserRequestPanel } from './UserRequestPanel';
 import { MacrosPanel } from './MacrosPanel';
 
 export const OperatorPanel = () => {
-  const { state, sendMessage, setSelectedUser, uploadImage } = useChat();
-  const { messages, userRequest, selectedUser } = state;
+  const { state, userRequest } = useChat();
+  const { selectedUser } = state;
 
   return (
     <div className="h-screen flex flex-col bg-casino-dark text-casino-text">
@@ -38,15 +38,10 @@ export const OperatorPanel = () => {
         <TabsContent value="chats" className="flex-1 flex p-0 m-0">
           <UsersList 
             selectedUser={selectedUser} 
-            setSelectedUser={setSelectedUser} 
-            messages={messages}
+            setSelectedUser={(userId) => useChat().setSelectedUser(userId)} 
+            messages={state.messages}
           />
-          <ChatArea 
-            selectedUser={selectedUser}
-            messages={messages}
-            sendMessage={sendMessage}
-            uploadImage={uploadImage}
-          />
+          <ChatArea />
         </TabsContent>
         
         <TabsContent value="requests" className="flex-1 p-0 m-0">
